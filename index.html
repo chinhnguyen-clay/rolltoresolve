@@ -982,6 +982,40 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 .r2r .reveal>.score-advance{grid-row:7}
 .r2r .reveal>.actions{grid-row:8}
 .r2r .roll-label{min-height:0}
+/* ===================== v6: sound toggles (Music / Sound effects) ===================== */
+.snd{display:flex;gap:6px}
+.r2r header.top .ghost.snd-btn{gap:6px}
+.snd-btn .ico svg{width:100%;height:100%}
+.snd-btn .slash{display:none}
+.snd-btn[aria-pressed="false"] .slash{display:inline}
+.snd-btn[aria-pressed="false"] .waves{display:none}
+.snd-btn .snd-state{font-weight:800;font-size:.82em;text-transform:uppercase;letter-spacing:.06em;background:var(--c-gold);color:var(--c-ink);border:2px solid var(--c-ink);border-radius:999px;padding:0 7px;line-height:1.35}
+.snd-btn[aria-pressed="false"]{background:var(--wood-shade);color:color-mix(in srgb,var(--c-card) 78%,var(--wood-shade))}
+.snd-btn[aria-pressed="false"] .snd-state{background:var(--c-card);color:var(--c-ink)}
+.snd-btn kbd{font-family:var(--body);font-weight:800;font-size:.72em;border:1.5px solid currentColor;border-radius:4px;padding:0 4px;opacity:.8;line-height:1.3}
+/* compact fit layouts where the header is already full: dock the toggles in the bottom-left page margin */
+@media (max-width:1699.98px){.snd-btn kbd{display:none}}
+@media (min-width:900px) and (max-width:1399.98px){
+  .r2r.fit .snd{position:fixed;left:calc(2.5 * var(--vw,10px) + 30px);bottom:max(2px,calc(1.25 * var(--vh,10px) - 13px));z-index:60}
+  .r2r.fit header.top .ghost.snd-btn{padding:2px 9px;font-size:.78rem;box-shadow:inset 0 -2px 0 var(--wood-shade),0 2px 0 var(--c-ink)}
+  .r2r.fit .snd-btn kbd{display:none}
+}
+
+/* ===================== v6.1: sound toggles always on screen (feedback Oct 30: "buttons for sound and music not showing up") =====================
+   >=1400px wide with the no-scroll layout: in the header, as before.
+   Everywhere else (narrower windows, browser zoom, the stacked/scrolling layout): a fixed pill in the bottom-left corner, above everything. */
+#r2r .snd{z-index:1000}
+@media (max-width:1399.98px){
+  #r2r .snd{position:fixed;left:max(8px,calc(2.5 * var(--vw,10px) + 22px));bottom:max(8px,env(safe-area-inset-bottom,0px));top:auto;right:auto;z-index:1000;
+    display:flex;gap:5px;padding:4px;background:var(--c-card);border:3px solid var(--c-ink);border-radius:14px;box-shadow:0 3px 0 var(--c-ink)}
+  #r2r header.top .ghost.snd-btn{padding:3px 10px;font-size:.8rem;min-height:30px;box-shadow:inset 0 -2px 0 var(--wood-shade)}
+}
+#r2r:not(.fit) .snd{position:fixed;left:8px;bottom:max(8px,env(safe-area-inset-bottom,0px));top:auto;z-index:1000;display:flex;gap:5px;padding:4px;
+  background:var(--c-card);border:3px solid var(--c-ink);border-radius:14px;box-shadow:0 3px 0 var(--c-ink)}
+#r2r:not(.fit) header.top .ghost.snd-btn{padding:3px 10px;font-size:.8rem;min-height:30px}
+#r2r:not(.fit) .wrap{padding-bottom:64px} /* stacked layout scrolls: keep the last content clear of the pill */
+@media print{#r2r .snd{display:none}}
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -998,6 +1032,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
         the treasure. Built on the five frameworks from the enablement plan.</p>
     </div>
     <div class="hbtns">
+      <div class="snd" role="group" aria-label="Sound"><button class="ghost snd-btn" id="musicBtn" type="button" aria-pressed="false" title="Music (M)"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 17.5V5.5l11-2.5v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><ellipse cx="6.5" cy="17.8" rx="3.2" ry="2.6" fill="currentColor"/><ellipse cx="17.5" cy="15.3" rx="3.2" ry="2.6" fill="currentColor"/><path class="slash" d="M3 3 L21 21" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></span><span class="snd-lbl">Music</span><span class="snd-state">Off</span><kbd>M</kbd></button><button class="ghost snd-btn" id="sfxBtn" type="button" aria-pressed="true" title="Sound effects (S)"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9.5h4l5-4.5v14l-5-4.5H3z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><g class="waves" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15.5 9.2q1.6 2.8 0 5.6"/><path d="M18.3 7q3 5 0 10"/></g><path class="slash" d="M15 9 l6 6 M21 9 l-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><span class="snd-lbl">Sound effects</span><span class="snd-state">On</span><kbd>S</kbd></button></div>
       <label class="ghost crew-count" for="crewCount"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="4.5" r="2.2"/><path d="M12 6.7V21M7.5 10h9M4 14.5Q4.5 21 12 21q7.5 0 8-6.5"/><path d="M2.5 15.5L4 14l1.8 1.6M21.5 15.5L20 14l-1.8 1.6"/></g></svg></span>Crews&nbsp;<select id="crewCount" aria-label="Number of crews (starts a new voyage)">
         <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label>
       <button class="ghost" id="wfBtn" type="button" aria-haspopup="dialog"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 5.5l5.5-2 7 2 5.5-2v15l-5.5 2-7-2-5.5 2z"/><path d="M8.5 3.5v15M15.5 5.5v15"/></g><path d="M10.6 9.6l2.8 2.8m0-2.8l-2.8 2.8" stroke="currentColor" stroke-width="2.4"/></svg></span>Workflows</button>
@@ -1124,6 +1159,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
         <li>Read the distress call aloud. The crew works the framework out loud — name the rung or check that failed.</li>
         <li>Reveal the diagnosis and the bug-or-config verdict, then open that framework's broken workflow and check it against its "fixed when" line. Solved it on their own? They sail the number they rolled. Needed a nudge? They sail 1.</li>
         <li>The wheel passes to the next crew. First to the chest wins the voyage.</li>
+        <li>Sound: the <b>Music</b> and <b>Sound effects</b> buttons (keys <b>M</b> and <b>S</b>) switch the sea shanty and the effects on or off. Music starts off; your choice is remembered in this browser.</li>
       </ol>
     </details>
     <p class="log-about"><b>About this game:</b> Roll to Resolve is the <b>Session&nbsp;2 game for the PSS Workflows training</b>
@@ -1138,6 +1174,192 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 <canvas id="confetti" hidden></canvas>
 </div>
 
+
+<script>
+/* ===================== v6: pirate sound effects + light sea-shanty music (Web Audio, all synthesized; no files, no CDNs) =====================
+   Defaults: music OFF, sound effects ON. Saved in localStorage "r2r-sound". The AudioContext is created/resumed on the first user gesture. */
+(function(){
+  var KEY="r2r-sound", pref={music:false,sfx:true};
+  try{ var sv=JSON.parse(localStorage.getItem(KEY)); if(sv){ if(typeof sv.music==="boolean") pref.music=sv.music; if(typeof sv.sfx==="boolean") pref.sfx=sv.sfx; } }catch(e){}
+  var AC=window.AudioContext||window.webkitAudioContext, ctx=null, master, comp, sfxBus, musicBus, duckG, leadBus, trem, noiseBuf, gestured=false;
+  var dbg={created:false,nodes:0,played:{},skipped:0,errors:[],bars:0,musicNotes:0};
+  var MUSIC_LEVEL=0.55, SFX_LEVEL=0.9;
+  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(pref)); }catch(e){} }
+  function err(e){ dbg.errors.push(String(e&&e.message||e)); }
+  function n(x){ dbg.nodes++; return x; }
+  function init(){
+    if(ctx||!AC) return ctx;
+    try{
+      ctx=new AC(); dbg.created=true;
+      comp=n(ctx.createDynamicsCompressor()); comp.threshold.value=-16; comp.knee.value=12; comp.ratio.value=4; comp.connect(ctx.destination);
+      master=n(ctx.createGain()); master.gain.value=0.8; master.connect(comp);
+      sfxBus=n(ctx.createGain()); sfxBus.gain.value=pref.sfx?SFX_LEVEL:0; sfxBus.connect(master);
+      duckG=n(ctx.createGain()); duckG.gain.value=1; duckG.connect(master);
+      musicBus=n(ctx.createGain()); musicBus.gain.value=0; musicBus.connect(duckG);
+      // accordion bellows tremolo on the melody bus
+      leadBus=n(ctx.createGain()); leadBus.gain.value=0.85; leadBus.connect(musicBus);
+      trem=n(ctx.createOscillator()); trem.frequency.value=5.2; var td=n(ctx.createGain()); td.gain.value=0.12; trem.connect(td); td.connect(leadBus.gain); trem.start();
+      noiseBuf=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate); var d=noiseBuf.getChannelData(0); for(var i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+      ctx.onstatechange=function(){ if(window.R2RSound&&R2RSound._ui) R2RSound._ui(); };
+    }catch(e){ err(e); ctx=null; }
+    return ctx;
+  }
+  function unlock(){
+    gestured=true; init(); if(!ctx) return;
+    if(ctx.state==="suspended"){ try{ var pr=ctx.resume(); if(pr&&pr.catch) pr.catch(err); }catch(e){ err(e); } }
+    if(pref.music && !playing) startMusic();
+  }
+  document.addEventListener("pointerdown",unlock,true);
+  document.addEventListener("keydown",unlock,true);
+  document.addEventListener("touchstart",unlock,{capture:true,passive:true});
+
+  // ---------- building blocks ----------
+  function mf(m){ return 440*Math.pow(2,(m-69)/12); }
+  function env(g,t,a,peak,dur,rel){ var p=Math.max(peak,0.0002); g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(p,t+a);
+    if(dur>a) g.gain.setValueAtTime(p,t+dur); g.gain.exponentialRampToValueAtTime(0.0001,t+dur+(rel||0.08)); }
+  function tone(o){ // {type,f,f2,t,dur,a,peak,rel,dest,detune,filt:{type,f,f2,Q}}
+    var t=o.t, end=t+o.dur+(o.rel||0.08)+0.05;
+    var osc=n(ctx.createOscillator()); osc.type=o.type||"sine"; osc.frequency.setValueAtTime(o.f,t);
+    if(o.f2) osc.frequency.exponentialRampToValueAtTime(o.f2,t+(o.glide||o.dur));
+    if(o.detune) osc.detune.value=o.detune;
+    var g=n(ctx.createGain()); env(g,t,o.a||0.005,o.peak,o.dur,o.rel); var head=osc;
+    if(o.filt){ var fl=n(ctx.createBiquadFilter()); fl.type=o.filt.type||"lowpass"; fl.frequency.setValueAtTime(o.filt.f,t); if(o.filt.f2) fl.frequency.exponentialRampToValueAtTime(o.filt.f2,t+(o.filt.time||o.dur)); fl.Q.value=o.filt.Q||0.7; osc.connect(fl); head=fl; }
+    head.connect(g); g.connect(o.dest||sfxBus); osc.start(t); osc.stop(end);
+    osc.onended=function(){ try{ g.disconnect(); }catch(e){} };
+  }
+  function noise(o){ // {t,dur,a,peak,rel,type,f,f2,Q,dest}
+    var t=o.t, src=n(ctx.createBufferSource()); src.buffer=noiseBuf; src.loop=true;
+    var fl=n(ctx.createBiquadFilter()); fl.type=o.type||"bandpass"; fl.frequency.setValueAtTime(o.f,t); if(o.f2) fl.frequency.exponentialRampToValueAtTime(o.f2,t+(o.time||o.dur)); if(o.f3) fl.frequency.exponentialRampToValueAtTime(o.f3,t+o.dur); fl.Q.value=o.Q||1;
+    var g=n(ctx.createGain()); env(g,t,o.a||0.004,o.peak,o.dur,o.rel); src.connect(fl); fl.connect(g); g.connect(o.dest||sfxBus);
+    src.start(t,Math.random()*1.5); src.stop(t+o.dur+(o.rel||0.08)+0.05); src.onended=function(){ try{ g.disconnect(); }catch(e){} };
+  }
+  function duck(t,hold){ var g=duckG.gain; g.cancelScheduledValues(t); g.setValueAtTime(g.value,t); g.setTargetAtTime(0.22,t,0.08); g.setTargetAtTime(1,t+hold,0.6); }
+  function brass(m,t,dur,peak){ [-7,7].forEach(function(dt){ tone({type:"sawtooth",f:mf(m),t:t,dur:dur,a:0.03,peak:peak,rel:0.12,detune:dt,filt:{type:"lowpass",f:500,f2:2400,time:0.06,Q:1.2}}); }); }
+  function coin(t,f,peak){ tone({type:"sine",f:f,t:t,dur:0.02,a:0.002,peak:peak,rel:0.55}); tone({type:"sine",f:f*2.76,t:t,dur:0.01,a:0.002,peak:peak*0.35,rel:0.25}); tone({type:"triangle",f:f*1.5,t:t+0.01,dur:0.01,peak:peak*0.25,rel:0.3}); }
+
+  // ---------- sound effects ----------
+  var SFX={
+    dice:function(t){ for(var i=0;i<9;i++){ var ti=t+i*0.056+Math.random()*0.018;
+        noise({t:ti,dur:0.02,peak:0.45,rel:0.03,type:"bandpass",f:2200+Math.random()*1800,Q:4});
+        if(i%2===0) tone({type:"triangle",f:260+Math.random()*60,f2:130,t:ti,dur:0.03,peak:0.22,rel:0.05}); }
+      tone({type:"sine",f:170,f2:70,t:t+0.56,dur:0.08,peak:0.5,rel:0.12}); noise({t:t+0.56,dur:0.04,peak:0.3,rel:0.06,type:"lowpass",f:900}); },
+    sail:function(t,steps){ var d=Math.min(1.7,0.6+(steps||1)*0.22);
+      noise({t:t,dur:d,a:d*0.4,peak:0.22,rel:0.35,type:"bandpass",f:320,f2:1300,time:d*0.5,f3:420,Q:1.4});
+      [0,0.42].forEach(function(o){ tone({type:"sawtooth",f:92,f2:138,t:t+o,dur:0.24,a:0.04,peak:0.09,rel:0.08,filt:{type:"bandpass",f:650,Q:7}}); }); },
+    reveal:function(t){ for(var i=0;i<7;i++) noise({t:t+i*0.045+Math.random()*0.02,dur:0.025,peak:0.16,rel:0.04,type:"highpass",f:3200,Q:0.8});
+      tone({type:"sawtooth",f:170,f2:330,t:t+0.12,dur:0.3,a:0.05,peak:0.08,rel:0.08,filt:{type:"bandpass",f:900,Q:6}});
+      [1175,1568,2349].forEach(function(f,i){ tone({type:"triangle",f:f,t:t+0.36+i*0.07,dur:0.02,peak:0.1,rel:0.45}); }); },
+    nail:function(t){ coin(t,1318.5,0.2); coin(t+0.09,1760,0.18); coin(t+0.18,2093,0.2); coin(t+0.3,2637,0.1); },
+    nudge:function(t){ coin(t,880,0.12); },
+    miss:function(t){ tone({type:"sawtooth",f:98,f2:87,t:t,dur:0.6,a:0.08,peak:0.2,rel:0.25,filt:{type:"lowpass",f:420,f2:300,Q:2}});
+      tone({type:"sawtooth",f:147,f2:131,t:t,dur:0.6,a:0.1,peak:0.08,rel:0.25,filt:{type:"lowpass",f:420,Q:2}});
+      tone({type:"sine",f:70,f2:40,t:t,dur:0.12,peak:0.45,rel:0.25}); },
+    kraken:function(t){ duck(t,3.2);
+      noise({t:t,dur:2.4,a:0.7,peak:0.7,rel:0.8,type:"lowpass",f:110,f2:220,time:1.2,Q:1.5});
+      tone({type:"sine",f:46,f2:33,t:t,dur:2.4,a:0.5,peak:0.55,rel:0.8});
+      tone({type:"sawtooth",f:55,f2:84,t:t+0.35,dur:1.6,a:0.6,peak:0.14,rel:0.6,filt:{type:"lowpass",f:260,f2:900,time:1.4,Q:3}});
+      noise({t:t+0.9,dur:0.9,a:0.3,peak:0.18,rel:0.5,type:"bandpass",f:500,f2:1500,Q:1.2}); },
+    "fx-kraken":function(t){ duck(t,1.6); noise({t:t,dur:1.1,a:0.4,peak:0.45,rel:0.5,type:"lowpass",f:120,f2:200,Q:1.4}); tone({type:"sine",f:50,f2:38,t:t,dur:1.1,a:0.3,peak:0.35,rel:0.5}); },
+    "fx-fog":function(t){ noise({t:t,dur:1.6,a:0.75,peak:0.24,rel:1.1,type:"lowpass",f:1100,f2:380,Q:0.6}); noise({t:t+0.3,dur:1.2,a:0.6,peak:0.06,rel:0.9,type:"bandpass",f:2600,f2:1600,Q:2});
+      tone({type:"sine",f:mf(62),t:t+0.5,dur:0.05,peak:0.05,rel:1.4}); },
+    "fx-mutiny":function(t){ [[50,57],[48,55]].forEach(function(ch,k){ var tt=t+k*0.32, d=k?0.36:0.2;
+        ch.forEach(function(m){ tone({type:"sawtooth",f:mf(m),f2:mf(m)*0.93,glide:d+0.1,t:tt,dur:d,a:0.02,peak:0.13,rel:0.12,filt:{type:"lowpass",f:420,f2:2200,time:0.05,Q:2}}); }); });
+      tone({type:"sine",f:65,f2:45,t:t,dur:0.1,peak:0.35,rel:0.2}); },
+    "fx-catchup":function(t){ [74,77,81,86].forEach(function(m,i){ tone({type:"triangle",f:mf(m),t:t+i*0.08,dur:0.02,peak:0.14,rel:0.5}); });
+      noise({t:t,dur:0.5,a:0.25,peak:0.1,rel:0.3,type:"bandpass",f:500,f2:1800,Q:1.2}); },
+    win:function(t){ duck(t,4.5);
+      var seq=[[62,0,0.14],[66,0.15,0.14],[69,0.3,0.14],[74,0.45,0.42],[71,0.9,0.14],[73,1.05,0.14],[74,1.2,0.75]];
+      seq.forEach(function(s){ brass(s[0],t+s[1],s[2],0.1); brass(s[0]-12,t+s[1],s[2],0.05); });
+      [50,57,62].forEach(function(m){ tone({type:"triangle",f:mf(m),t:t+1.2,dur:0.7,a:0.02,peak:0.12,rel:0.5}); });
+      tone({type:"sine",f:90,f2:50,t:t,dur:0.1,peak:0.4,rel:0.3}); tone({type:"sine",f:90,f2:50,t:t+1.2,dur:0.1,peak:0.45,rel:0.35});
+      [1318.5,1568,1760,2093,2637].forEach(function(f,i){ coin(t+1.95+i*0.08,f,0.12); }); }
+  };
+  var last={};
+  function play(name,arg){
+    if(!pref.sfx||!SFX[name]){ dbg.skipped++; return false; }
+    if(!gestured){ dbg.skipped++; return false; }   // never before a user gesture (also keeps restored state silent on reload)
+    if(!init()) return false;
+    var now=ctx.currentTime; if(last[name] && now-last[name]<0.12) return false; last[name]=now;
+    if(name==="fx-kraken" && last.kraken && now-last.kraken<1.5) return false; // the Kraken rumble is already playing
+    try{ SFX[name](now+0.02+(/^fx-/.test(name)?0.3:0),arg); dbg.played[name]=(dbg.played[name]||0)+1; return true; }catch(e){ err(e); return false; }
+  }
+
+  // ---------- music: a gentle 6/8 shanty in D Dorian, oom-pa-pa button-box accompaniment ----------
+  var E8=0.21, BAR=E8*6; // ~95 dotted-quarter beats per minute
+  var A=[[[62,2],[65,1],[69,2],[65,1]],[[67,2],[64,1],[60,2],[64,1]],[[62,2],[65,1],[69,2],[74,1]],[[72,2],[69,1],[67,3]],
+         [[65,2],[69,1],[74,2],[69,1]],[[67,2],[71,1],[72,2],[69,1]],[[65,1],[67,1],[69,1],[67,2],[64,1]],[[62,5],[0,1]]];
+  var A2=A.slice(); A2[3]=[[72,1],[71,1],[69,1],[67,3]]; A2[7]=[[62,3],[57,2],[0,1]];
+  var Bp=[[[74,2],[76,1],[77,2],[74,1]],[[72,2],[69,1],[67,2],[69,1]],[[74,2],[72,1],[69,2],[65,1]],[[67,2],[69,1],[72,3]],
+          [[74,2],[76,1],[77,2],[76,1]],[[74,2],[72,1],[69,2],[67,1]],[[65,1],[64,1],[65,1],[67,2],[64,1]],[[62,5],[0,1]]];
+  var CA=["Dm","C","Dm","C","F","G","C","Dm"], CB=["Dm","F","Dm","C","Dm","Am","C","Dm"];
+  var CH={Dm:[50,[62,65,69]],C:[48,[60,64,67]],F:[53,[60,65,69]],G:[55,[62,67,71]],Am:[45,[60,64,69]]};
+  var SONG=[]; // 32 bars of tune + 2 breathing bars, then the arrangement changes on each pass
+  A.forEach(function(b,i){SONG.push([b,CA[i]]);}); Bp.forEach(function(b,i){SONG.push([b,CB[i]]);});
+  A2.forEach(function(b,i){SONG.push([b,CA[i]]);}); Bp.forEach(function(b,i){SONG.push([i===7?[[62,3],[69,1],[62,2]]:b,CB[i]]);});
+  SONG.push([null,"Dm"]); SONG.push([null,"Dm"]);
+  var playing=false, timer=null, nextT=0, barIdx=0, pass=0, waveSrc=null, waveNodes=[];
+  function accordion(m,t,d,peak,dest){ [-6,6].forEach(function(dt){ tone({type:"sawtooth",f:mf(m),t:t,dur:d,a:0.035,peak:peak,rel:0.09,detune:dt,dest:dest,filt:{type:"lowpass",f:1500,Q:0.6}}); });
+    tone({type:"square",f:mf(m-12),t:t,dur:d,a:0.035,peak:peak*0.25,rel:0.09,dest:dest,filt:{type:"lowpass",f:900,Q:0.5}}); }
+  function whistle(m,t,d,peak,dest){ tone({type:"triangle",f:mf(m+12),t:t,dur:d,a:0.04,peak:peak,rel:0.12,dest:dest}); tone({type:"sine",f:mf(m+12)*2,t:t,dur:d,a:0.05,peak:peak*0.08,rel:0.1,dest:dest}); }
+  function scheduleBar(t){
+    var row=SONG[barIdx], mel=row[0], ch=CH[row[1]], p=pass%3;
+    // bass on beats 1 and 4, soft chords on the off-beats (oom-pa-pa)
+    tone({type:"triangle",f:mf(ch[0]),t:t,dur:E8*2.2,a:0.01,peak:0.34,rel:0.15,dest:musicBus});
+    tone({type:"triangle",f:mf(ch[0]+7),t:t+E8*3,dur:E8*2.2,a:0.01,peak:0.26,rel:0.15,dest:musicBus});
+    if(mel){ [1,2,4,5].forEach(function(k){ ch[1].forEach(function(m){ tone({type:"sawtooth",f:mf(m),t:t+E8*k,dur:E8*0.5,a:0.015,peak:0.018,rel:0.06,dest:musicBus,filt:{type:"lowpass",f:1100,Q:0.5}}); }); }); }
+    if(mel){ var o=0; mel.forEach(function(nn){ var m=nn[0], d=nn[1]*E8;
+        if(m){ var hold=d*0.86;
+          if(p===0) accordion(m,t+o,hold,0.07,leadBus);
+          else if(p===1) whistle(m,t+o,hold,0.11,leadBus);
+          else { accordion(m,t+o,hold,0.055,leadBus); if(nn[1]>=2) whistle(m-12,t+o,hold,0.05,leadBus); }
+          dbg.musicNotes++; }
+        o+=d; }); }
+    dbg.bars++; barIdx++; if(barIdx>=SONG.length){ barIdx=0; pass++; }
+  }
+  function tick(){ if(!playing||!ctx) return; var now=ctx.currentTime; if(nextT<now) nextT=now+0.08; while(nextT<now+0.45){ try{ scheduleBar(nextT); }catch(e){ err(e); } nextT+=BAR; } }
+  function startWaves(){ try{ var src=n(ctx.createBufferSource()); src.buffer=noiseBuf; src.loop=true; var fl=n(ctx.createBiquadFilter()); fl.type="lowpass"; fl.frequency.value=480;
+      var g=n(ctx.createGain()); g.gain.value=0.05; var lfo=n(ctx.createOscillator()); lfo.frequency.value=0.09; var lg=n(ctx.createGain()); lg.gain.value=0.035;
+      lfo.connect(lg); lg.connect(g.gain); src.connect(fl); fl.connect(g); g.connect(musicBus); src.start(); lfo.start(); waveSrc=src; waveNodes=[src,lfo,g]; }catch(e){ err(e); } }
+  function startMusic(){
+    if(!init()) return; if(playing) return; playing=true;
+    var t=ctx.currentTime; musicBus.gain.cancelScheduledValues(t); musicBus.gain.setValueAtTime(musicBus.gain.value,t); musicBus.gain.linearRampToValueAtTime(MUSIC_LEVEL,t+1.2);
+    nextT=t+0.1; startWaves(); tick(); timer=setInterval(tick,60);
+  }
+  function stopMusic(){
+    if(!playing) return; playing=false; clearInterval(timer); timer=null; if(!ctx) return;
+    var t=ctx.currentTime; musicBus.gain.cancelScheduledValues(t); musicBus.gain.setValueAtTime(musicBus.gain.value,t); musicBus.gain.linearRampToValueAtTime(0,t+0.4);
+    var w=waveNodes; waveNodes=[]; setTimeout(function(){ w.forEach(function(x){ try{ x.stop(); }catch(e){} try{ x.disconnect(); }catch(e){} }); },600);
+  }
+  document.addEventListener("visibilitychange",function(){ if(!ctx) return; if(document.hidden){ if(playing){ stopMusic(); playing=false; pausedByHide=true; } } else if(pausedByHide){ pausedByHide=false; if(pref.music) startMusic(); } });
+  var pausedByHide=false;
+
+  function setMusic(on){ pref.music=!!on; save(); if(on){ if(gestured) startMusic(); } else stopMusic(); ui(); }
+  function setSfx(on){ pref.sfx=!!on; save(); if(ctx){ var t=ctx.currentTime, g=sfxBus.gain; g.cancelScheduledValues(t); g.setValueAtTime(g.value,t); g.linearRampToValueAtTime(on?SFX_LEVEL:0,t+0.06); } ui(); if(on) play("nudge"); }
+  function ui(){
+    var mb=document.getElementById("musicBtn"), sb=document.getElementById("sfxBtn");
+    if(mb){ mb.setAttribute("aria-pressed",String(pref.music)); mb.querySelector(".snd-state").textContent=pref.music?"On":"Off"; mb.title="Music "+(pref.music?"on":"off")+" (M)"; }
+    if(sb){ sb.setAttribute("aria-pressed",String(pref.sfx)); sb.querySelector(".snd-state").textContent=pref.sfx?"On":"Off"; sb.title="Sound effects "+(pref.sfx?"on":"off")+" (S)"; }
+  }
+  function wire(){
+    var mb=document.getElementById("musicBtn"), sb=document.getElementById("sfxBtn");
+    if(mb) mb.addEventListener("click",function(){ unlock(); setMusic(!pref.music); });
+    if(sb) sb.addEventListener("click",function(){ unlock(); setSfx(!pref.sfx); });
+    document.addEventListener("keydown",function(e){
+      if(e.ctrlKey||e.metaKey||e.altKey||e.repeat) return;
+      var tg=e.target, tn=tg&&tg.tagName; if(tn==="INPUT"||tn==="TEXTAREA"||tn==="SELECT"||(tg&&tg.isContentEditable)) return;
+      var k=(e.key||"").toLowerCase();
+      if(k==="m"){ e.preventDefault(); setMusic(!pref.music); } else if(k==="s"){ e.preventDefault(); setSfx(!pref.sfx); }
+    });
+    ui();
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",wire); else setTimeout(wire,0);
+  window.R2RSound={play:play,setMusic:setMusic,setSfx:setSfx,_ui:ui,
+    state:function(){ return {music:pref.music,sfx:pref.sfx,gestured:gestured,ctx:ctx?ctx.state:null,playing:playing,
+      musicGain:musicBus?+musicBus.gain.value.toFixed(3):null,sfxGain:sfxBus?+sfxBus.gain.value.toFixed(3):null,sfxTarget:sfxBus?(pref.sfx?SFX_LEVEL:0):null,duck:duckG?+duckG.gain.value.toFixed(3):null,
+      nodes:dbg.nodes,played:dbg.played,skipped:dbg.skipped,errors:dbg.errors.slice(),bars:dbg.bars,musicNotes:dbg.musicNotes,created:dbg.created}; }};
+})();
+</script>
+
 <script>
 (function(){
   "use strict";
@@ -1146,6 +1368,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   var PENNANT=["M25 3 L35 5.5 L25 8.5 Z","M25 3 L36 3 L32 5.75 L36 8.5 L25 8.5 Z","M25 2.5 L34 2.5 L34 9 L25 9 Z",
     "M25 3 Q31 3.6 39 4.6 Q31 6.2 25 8.5 Z","M25 2.5 L32 4.1 L25 5.7 L32 7.3 L25 8.9 Z","M25 2.5 L32 2.5 Q36 5.75 32 9 L25 9 Z"];
   var O=' class="o"';
+  function snd(n,a){ try{ if(window.R2RSound) R2RSound.play(n,a); }catch(e){} }
   function ship(color,i){
     // one hull drawing; light from the top left, one darker tone on the right/shadow side
     return '<svg viewBox="0 0 48 48" width="100%" height="100%">'
@@ -1245,6 +1468,36 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   ART.mutiny='<svg viewBox="0 0 40 40" class="art"><rect'+O+' x="6" y="3" width="3" height="35" fill="var(--c-wood)"/>'
     +'<path'+O+' d="M9 5 H36 L31.5 13.5 L36 22 H9Z" fill="var(--c-ink)"/>'
     +'<g stroke="var(--c-card)" stroke-width="2.2" stroke-linecap="round" fill="none"><path d="M14 8.5 Q21 12 29 19"/><path d="M29 8.5 Q22 12 14 19"/><path d="M12.5 17 l3.5 3.5M30.5 17 l-3.5 3.5"/></g></svg>';
+  // v6: one distinct icon per stop (feedback Oct 30: Smuggler's Cove and Parrot Isle looked the same)
+  ART.gull='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M9 35 L14 27 L19 29 L24 24 L33 35Z" fill="var(--c-ink)"/>'
+    +'<path'+O+' d="M3 15 Q10 7 19 14 Q28 6 37 12 Q28 12 22 19 Q20 21 18 19 Q12 12 3 15Z" fill="var(--c-card)"/>'
+    +'<path d="M20 15 l3.5 1.6 -3.5 1.2z" fill="var(--c-gold)"/></svg>';
+  ART.wreck='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M15 26 L11 6" fill="none" stroke-width="3.4"/>'
+    +'<path'+O+' d="M12 8 L26 12 L21 14.5 L24 18 L14 19Z" fill="var(--c-card)"/>'
+    +'<path'+O+' d="M3 25 L35 20 L31 30 Q18 34 7 31Z" fill="var(--c-wood)"/>'
+    +'<path d="M8 27.5 L31 24" stroke="var(--wood-shade)" stroke-width="1.8"/><path'+O+' d="M20 26 l3 -1 1 3 -3 1z" fill="var(--c-ink)"/>'
+    +'<path d="M1 36 Q7 33 13 36 T25 36 T39 36" stroke="var(--c-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>';
+  ART.cove='<svg viewBox="0 0 40 40" class="art"><path d="M2 36 Q20 30 38 36" stroke="var(--c-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/>'
+    +'<path'+O+' d="M8 10 Q5 21 8 33 L21 33 Q24 21 21 10Z" fill="var(--c-wood)"/>'
+    +'<g stroke="var(--c-gold)" stroke-width="2.4"><path d="M7 16 H22 M6.6 27 H22.4"/></g>'
+    +'<path'+O+' d="M8 10 H21" fill="none"/><path'+O+' d="M8 33 H21" fill="none"/>'
+    +'<rect'+O+' x="21" y="20" width="15" height="13" fill="var(--c-gold)"/><path d="M22.5 21.5 L34.5 31.5 M34.5 21.5 L22.5 31.5" stroke="var(--c-ink)" stroke-width="2.2"/></svg>';
+  ART.reef='<svg viewBox="0 0 40 40" class="art"><g fill="none" stroke-linecap="round" stroke-linejoin="round">'
+    +'<path d="M20 34 V20 M20 24 Q12 21 11 12 M20 22 Q28 20 29 10 M11 16 Q6 15 5 9 M29 15 Q34 14 35 8 M20 20 V7" stroke="var(--c-ink)" stroke-width="8"/>'
+    +'<path d="M20 34 V20 M20 24 Q12 21 11 12 M20 22 Q28 20 29 10 M11 16 Q6 15 5 9 M29 15 Q34 14 35 8 M20 20 V7" stroke="var(--crew4)" stroke-width="3.6"/></g>'
+    +'<path'+O+' d="M5 36 Q20 30 35 36Z" fill="var(--c-ink)"/></svg>';
+  ART.parrot='<svg viewBox="0 0 40 40" class="art"><g transform="translate(20 21) scale(1.18) translate(-20 -21)"><path'+O+' d="M17 29 L14 39 L19 36 L22 39 L23 29Z" fill="var(--crew2)"/>'
+    +'<path'+O+' d="M16 12 Q11 22 16 30 L24 30 Q28 21 26 12Z" fill="var(--crew0)"/>'
+    +'<circle'+O+' cx="21" cy="10" r="6.5" fill="var(--crew0)"/>'
+    +'<path'+O+' d="M26.5 7.5 Q33 8.5 31 15.5 Q29.5 12.5 26.5 13Z" fill="var(--c-gold)"/>'
+    +'<path'+O+' d="M17 16 Q13 24 18 29 Q23 25 22 16Z" fill="var(--crew1)"/>'
+    +'<circle cx="22.5" cy="9" r="2.2" fill="var(--c-card)"/><circle cx="23" cy="9" r="1.1" fill="var(--c-ink)"/>'
+    +'<path'+O+' d="M5 31 H35" fill="none" stroke-width="4"/><path d="M5 31 H35" stroke="var(--c-wood)" stroke-width="2.2"/></g></svg>';
+  ART.cannon='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M5 20 L29 11 Q35 9 36 14 Q37 19 31 19.5 L7 27Z" fill="var(--c-ink)"/>'
+    +'<path d="M9 21 L29 13.5" stroke="var(--c-sealine)" stroke-width="1.8" stroke-linecap="round"/>'
+    +'<path'+O+' d="M8 26 L24 20 L26 29 L8 31Z" fill="var(--c-wood)"/>'
+    +'<circle'+O+' cx="14" cy="30" r="5.5" fill="var(--c-wood)"/><circle cx="14" cy="30" r="1.6" fill="var(--c-gold)"/>'
+    +'<circle'+O+' cx="30" cy="33" r="3.4" fill="var(--c-ink)"/><circle'+O+' cx="36" cy="33" r="3" fill="var(--c-ink)"/></svg>';
   var FX={
     fog:{icon:"fog", c:"var(--c-sealine)", stop:"Foggy Narrows", tag:"No hints",
       land:function(n){ return n+" sails into the fog. On their next turn there are no hints: a nudge counts as a miss."; },
@@ -1261,16 +1514,16 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   var NODES = [
     {name:"Set Sail", icon:"anchor", start:true},
     {name:"Tide Pools", icon:"wave"},
-    {name:"Gull Rock", icon:"rock"},
-    {name:"Shipwreck Shoals", icon:"skull"},
-    {name:"Smuggler's Cove", icon:"palm"},
+    {name:"Gull Rock", icon:"gull"},
+    {name:"Shipwreck Shoals", icon:"wreck"},
+    {name:"Smuggler's Cove", icon:"cove"},
     {name:"Foggy Narrows", icon:"fog", fx:"fog"},
     {name:"Kraken Deep", icon:"kraken", fx:"kraken"},
-    {name:"Dead Man's Reef", icon:"rock"},
-    {name:"Parrot Isle", icon:"palm"},
+    {name:"Dead Man's Reef", icon:"reef"},
+    {name:"Parrot Isle", icon:"parrot"},
     {name:"Mutiny Bay", icon:"mutiny", fx:"mutiny"},
     {name:"Skull Point", icon:"skull"},
-    {name:"Cannon Ridge", icon:"rock"},
+    {name:"Cannon Ridge", icon:"cannon"},
     {name:"Treasure", icon:"chest", chest:true}
   ];
   var TRACK = NODES.length - 1; // reach last node to win
@@ -1714,7 +1967,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     var L0=TRACKLEN[a], L1=TRACKLEN[b], p0=pointAt(L0);
     var sx=(parseFloat(tok.style.left)||0)+SHIP/2-p0.x, sy=(parseFloat(tok.style.top)||0)+SHIP/2-p0.y;
     var dur=Math.min(2400,520+(b-a)*300), t0=performance.now();
-    tok.classList.add("sailing");
+    tok.classList.add("sailing"); snd("sail",b-a);
     function step(now){
       var p=Math.min(1,(now-t0)/dur), e=p<0.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2, L=L0+(L1-L0)*e, pt=pointAt(L), ahead=pointAt(L+3);
       var k=a; while(k<b-1 && TRACKLEN[k+1]<=L) k++;
@@ -1773,6 +2026,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     var k=document.createElement("div"); k.className="kraken-pop"; k.setAttribute("aria-hidden","true");
     k.innerHTML='<div class="kp-ink"></div>'+KRAKEN_POP+'<div class="kp-title">The Kraken rises!</div><div class="kp-sub">Bug or config? Make the call. The framework stays hidden.</div>';
     p.appendChild(k);
+    snd("kraken");
     if(!RM()){ p.classList.remove("quake"); void p.offsetWidth; p.classList.add("quake"); var m=rectMid(p); burst(m.x,m.r.top+m.r.height*0.75,"drop",22,2.4,200); }
     setTimeout(function(){ k.classList.add("out"); }, 2300);
     setTimeout(function(){ k.remove(); p.classList.remove("quake"); }, 3000);
@@ -1812,7 +2066,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   var rolling=false;
   function roll(){
     if(rolling||state.over) return;
-    rolling=true; $("rollBtn").disabled=true; die.classList.add("rolling");
+    rolling=true; snd("dice"); $("rollBtn").disabled=true; die.classList.add("rolling");
     $("caseEmpty").hidden=true; $("caseBody").hidden=true;
     var ticks=0;
     var iv=setInterval(function(){
@@ -1896,7 +2150,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     var b=$("fxBanner"); clearTimeout(fbT1); clearTimeout(fbT2); b.classList.remove("out"); b.hidden=true; void b.offsetWidth;
     var ic=kind==="catchup"?SAIL_ICON:ART[FX[kind].icon].replace('class="art"','');
     $("fbIc").innerHTML=ic; b.style.setProperty("--fxc",kind==="catchup"?"var(--c-sealine)":FX[kind].c);
-    $("fbT").textContent=title; $("fbS").textContent=sub; b.hidden=false;
+    $("fbT").textContent=title; $("fbS").textContent=sub; b.hidden=false; snd("fx-"+kind);
     fbT1=setTimeout(function(){ b.classList.add("out"); }, 4200);
     fbT2=setTimeout(function(){ b.hidden=true; b.classList.remove("out"); }, 4800);
   }
@@ -1913,7 +2167,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     $("scoreHint").textContent="Crew solved it solo? Sail the number rolled ("+state.roll+(cu0?" +1 catch-up":"")+"). "
       +(fx0==="fog"?"No hints in the fog: a miss means stay put.":"Needed a hint? Sail 1.")
       +(fx0==="mutiny"?" Missed it? "+state.names[(state.turn+1)%crewCount()]+" may steal it for +1.":"");
-    $("revealBtn").hidden=true; $("revealBox").hidden=false; state.revealed=true; persist();
+    $("revealBtn").hidden=true; $("revealBox").hidden=false; state.revealed=true; persist(); snd("reveal");
   }
   function cardKey(){ return state.card ? (state.card.wild ? state.card.wildKey : FACES[state.card.face].key) : null; }
   function renderHandsOn(){
@@ -1935,6 +2189,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     else if(kind==="nudge") step=(c.fx==="fog")?0:1;   // Foggy Narrows: no hint, so a nudge counts as a miss
     else step=0;                                        // Mutiny Bay steal: the crew that missed stays put
     state.pos[t]=Math.min(TRACK, state.pos[t]+step);
+    snd(kind==="nail"?"nail":(step===0?"miss":"nudge"));
     var movers=step>0?[t]:[];
     if(kind==="steal"){ state.pos[nx]=Math.min(TRACK,state.pos[nx]+1); movers.push(nx); }
     placeTokens();
@@ -1967,7 +2222,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
         li.querySelector(".wp").textContent="Waypoint "+state.pos[i]+" / "+TRACK; st.appendChild(li); });
       st.hidden=false;
     } else st.hidden=true;
-    $("winOverlay").hidden=false; renderTurn(); confetti(t); winFx(); persist();
+    $("winOverlay").hidden=false; renderTurn(); confetti(t); winFx(); persist(); snd("win");
   }
   function reset(count){
     var n=Math.max(2,Math.min(MAX_CREWS,parseInt(count,10)||crewCount()||2)), pos=[], names=[];
