@@ -907,6 +907,81 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 .ship{filter:drop-shadow(0 4px 4px rgba(20,12,4,.4))}
 
 .ship{z-index:20}.ship.sailing{z-index:21}.compass{z-index:16}.ripple-fx{z-index:19}
+
+/* ===================== v7: smaller, tighter right-hand panel (feedback Oct 29: too much scrolling after Reveal) =====================
+   Card body ~23px at 1080p (was 28px). Board, colours and gameplay unchanged. */
+.r2r{--cardFs:clamp(15px,calc(2.1 * var(--vh,10.8px)),26px)}
+.r2r.fit .case-scroll{padding:10px 14px}
+.r2r .face-row{margin-bottom:4px;gap:4px 10px}
+.r2r .face-chip{font-size:calc(var(--cardFs) * .9);padding:3px 12px 3px 3px;gap:8px}
+.r2r .face-chip .dot{width:clamp(34px,calc(4.4 * var(--vh,10.8px)),56px);height:clamp(34px,calc(4.4 * var(--vh,10.8px)),56px);padding:3px}
+.r2r .face-tag{font-size:calc(var(--cardFs) * .62);line-height:1.2}
+.r2r .ticket{padding:8px 14px 10px;margin:10px 0 10px}
+.r2r .ticket .from{font-size:calc(var(--cardFs) * .5);margin-bottom:4px}
+.ticket p,.r2r .ticket p{line-height:1.25}
+.r2r .reveal{padding-top:8px;margin-top:2px}
+.r2r .reveal h4{font-size:calc(var(--cardFs) * .52);margin:0 0 1px}
+.r2r .reveal .move,.r2r .reveal .diag,.r2r .reply{line-height:1.25}
+.r2r .reveal .move,.r2r .reveal .diag{margin-bottom:6px}
+.r2r .verdict{font-size:calc(var(--cardFs) * .78);padding:2px 10px;margin-bottom:6px}
+.r2r .reply{padding:5px 10px;margin-bottom:6px;border-left-width:8px}
+.r2r .reply .lbl,.r2r .handson .lbl{font-size:calc(var(--cardFs) * .52);margin-bottom:1px}
+.r2r .handson{padding:4px 10px;margin-bottom:6px}
+.r2r .handson .wf-link,.r2r .handson .wf-fixed{font-size:calc(var(--cardFs) * .7);line-height:1.25}
+.r2r .score-advance{font-size:calc(var(--cardFs) * .66);line-height:1.25;margin:4px 0 4px}
+.r2r .actions{padding-top:4px;gap:8px}
+.r2r .actions button{font-size:calc(var(--cardFs) * .68);padding:6px 8px}
+.fx-note{padding:5px 10px;margin:0 0 8px;font-size:calc(var(--cardFs) * .68)}
+.fx-note .fn-ic{width:clamp(30px,calc(3.6 * var(--vh,10.8px)),44px);height:clamp(30px,calc(3.6 * var(--vh,10.8px)),44px)}
+/* once revealed, the stop-effect note is repeated on the outcome buttons and score hint, so fold it away */
+#caseScroll:has(#revealBox:not([hidden])) .fx-note{display:none}
+.r2r .face-row{padding:4px 12px 4px 4px}
+.r2r .ticket{margin:8px 0 8px}
+.r2r .die{width:clamp(52px,calc(7.2 * var(--vh)),76px);height:clamp(52px,calc(7.2 * var(--vh)),76px);padding:clamp(8px,calc(1.2 * var(--vh)),12px)}
+.r2r .score-advance{margin:2px 0 2px}
+.r2r .handson .wf-fixed{margin-top:0}
+
+/* ===================== v7: whose turn is it? (feedback Oct 29: emphasize the active crew) ===================== */
+.r2r{--turnc:var(--crew0)}
+/* big banner in the crew's colour at the top of the turn panel */
+.r2r .turn-flag{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:0 0 8px;padding:6px 14px;
+  background:var(--turnc);color:var(--c-card);border:var(--ol);border-radius:10px;box-shadow:inset 0 -5px 0 color-mix(in srgb,var(--c-ink) 30%,var(--turnc));
+  font-family:var(--body);font-weight:800;line-height:1.1;text-align:center}
+.r2r .turn-flag .tf-txt{font-family:var(--pirate);font-weight:400;font-size:clamp(22px,calc(3 * var(--vh,10.8px)),38px);letter-spacing:.02em;text-shadow:0 2px 0 var(--c-ink)}
+.r2r .turn-flag #turnName{font:inherit;color:inherit;font-size:inherit}
+.r2r .turn-flag .tf-sub{font-size:calc(var(--cardFs) * .55);text-transform:uppercase;letter-spacing:.1em;background:var(--c-card);color:var(--c-ink);border:2px solid var(--c-ink);border-radius:999px;padding:2px 10px}
+.r2r .turn-flag .pin{width:clamp(26px,calc(3.2 * var(--vh,10.8px)),40px);height:clamp(26px,calc(3.2 * var(--vh,10.8px)),40px);margin:0;background:var(--c-card);border:2px solid var(--c-ink);border-radius:50%;padding:2px;display:inline-grid;place-items:center}
+.r2r aside.panel{border-left:12px solid var(--turnc)}
+/* scoreboard: active crew filled in its colour, others dimmed */
+.r2r .crew{transition:opacity .3s,filter .3s,background-color .3s}
+.r2r .crews:has(.crew.turn) .crew:not(.turn){opacity:.62;filter:saturate(.55)}
+.r2r .crew.turn{background:color-mix(in srgb,var(--turnc) 26%,var(--c-card));border-color:var(--c-ink);border-left-color:var(--turnc);
+  outline:4px solid var(--turnc);outline-offset:2px;box-shadow:inset -4px -4px 0 color-mix(in srgb,var(--turnc) 35%,var(--card-shade)),0 0 0 9px var(--c-ink);
+  animation:turnPulse 2.4s ease-in-out infinite}
+.r2r .crew.turn .crew-name{font-weight:800}
+.r2r .crew.turn::after{background:var(--turnc);color:var(--c-card)}
+@keyframes turnPulse{0%,100%{outline-offset:2px;outline-color:var(--turnc)}50%{outline-offset:5px;outline-color:color-mix(in srgb,var(--turnc) 55%,var(--c-card))}}
+/* board: active ship gets a ring in its colour + gold pulse; other ships dimmed a touch */
+.ship.active{z-index:22}
+.ship.active .base{box-shadow:0 0 0 calc(5px / var(--bs,1)) var(--c-gold),0 0 0 calc(8px / var(--bs,1)) var(--c-ink),0 0 0 calc(14px / var(--bs,1)) color-mix(in srgb,var(--turnc) 55%,transparent)}
+.ship.active::before{content:"";position:absolute;left:50%;top:50%;width:150%;height:150%;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;z-index:-1;
+  border:calc(5px / var(--bs,1)) solid var(--turnc);box-shadow:0 0 0 calc(3px / var(--bs,1)) var(--c-ink);animation:shipRing 1.8s ease-out infinite}
+@keyframes shipRing{0%{transform:translate(-50%,-50%) scale(.7);opacity:.95}100%{transform:translate(-50%,-50%) scale(1.15);opacity:0}}
+.mapboard:has(.ship.active) .ship:not(.active){opacity:.72;filter:saturate(.6)}
+@media (prefers-reduced-motion:reduce){.r2r .crew.turn{animation:none}.ship.active::before{animation:none;opacity:.8;transform:translate(-50%,-50%) scale(.95)}}
+/* verdict stamp sits on the "Where it failed" heading row instead of its own line */
+.r2r .reveal:not([hidden]){display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px}
+.r2r .reveal>*{grid-column:1/-1}
+.r2r .reveal>h4:nth-of-type(1){grid-row:1}
+.r2r .reveal>.move{grid-row:2}
+.r2r .reveal>h4:nth-of-type(2){grid-row:3;grid-column:1;align-self:end;margin-bottom:3px}
+.r2r .reveal>.verdict{grid-row:3;grid-column:2;justify-self:end;align-self:center;margin:0 0 3px}
+.r2r .reveal>.diag{grid-row:4}
+.r2r .reveal>.reply{grid-row:5}
+.r2r .reveal>.handson{grid-row:6}
+.r2r .reveal>.score-advance{grid-row:7}
+.r2r .reveal>.actions{grid-row:8}
+.r2r .roll-label{min-height:0}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -951,7 +1026,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     <div class="side">
       <div class="crews" id="crews"></div>
     <aside class="panel" aria-label="Dice and turn">
-      <div class="turn-flag"><span class="pin" id="turnPin"></span><span id="turnName">Port Crew</span>&nbsp;at the wheel</div>
+      <div class="turn-flag"><span class="pin" id="turnPin"></span><span class="tf-txt"><span id="turnName">Port Crew</span><span class="tf-sfx">&rsquo;s turn</span></span><span class="tf-sub">at the wheel</span></div>
       <div class="die-stage"><span class="die-ic" id="dieIc" aria-hidden="true" hidden></span>
         <div class="die" id="die" role="img" aria-label="Die showing 1">
           <span class="pip p1"></span><span class="pip p2"></span>
@@ -1720,6 +1795,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   function renderTurn(){
     $("turnPin").innerHTML=pin(teamColor[state.turn]);
     $("turnName").textContent=state.names[state.turn];
+    var R=$("r2r"); if(R){ R.style.setProperty("--turnc",teamColor[state.turn]); R.setAttribute("data-turn",state.turn); }
     for(var i=0;i<crewCount();i++){ var c=$("crew"+i); if(c) c.classList.toggle("turn",state.turn===i); var tk=$("tok"+i); if(tk) tk.classList.toggle("active",state.turn===i&&!state.over); }
   }
 
@@ -1781,7 +1857,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     $("obMark").hidden=!OPEN_BUG[c.id];
     $("handsOn").hidden=true;
     $("ticketText").textContent=c.t;
-    $("revealBox").hidden=true; $("revealBtn").hidden=false; $("caseBody").hidden=false;
+    $("revealBox").hidden=true; $("revealBtn").hidden=false; $("caseBody").hidden=false; $("caseEmpty").hidden=true;
     $("nailN").textContent=n;
     configureOutcomes();
   }
