@@ -1016,6 +1016,17 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 #r2r:not(.fit) .wrap{padding-bottom:64px} /* stacked layout scrolls: keep the last content clear of the pill */
 @media print{#r2r .snd{display:none}}
 
+/* v7: library prompt, workspace warning, steal offer, slightly tighter stop labels for a 30-stop board */
+.r2r .lib-prompt{margin:8px 0 0;font-size:calc(var(--cardFs) * .7);line-height:1.25;font-weight:700;color:var(--c-wood)}
+.r2r .lib-prompt a{color:var(--c-deep);font-weight:800}
+.r2r .ws-warn{margin:8px 0 10px;padding:6px 10px;background:var(--c-parchment);border:3px solid var(--c-ink);border-left-width:8px;border-radius:8px;
+  font-size:calc(var(--cardFs) * .66);line-height:1.25;font-weight:700;color:var(--c-ink)}
+.r2r .steal-offer{margin-top:8px}
+.r2r .node-cap{font-size:calc(var(--capFs) * .86 / var(--bs,1));max-width:8.2em;line-height:1.1;text-wrap:balance}
+#r2r .diag{white-space:pre-wrap}
+
+.r2r.fit #stealOffer{position:sticky;bottom:0;z-index:4;background:var(--c-card);box-shadow:0 16px 0 var(--c-card);padding:8px 0 2px}
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1080,8 +1091,8 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
       <div class="case-empty" id="caseEmpty">
         <div class="scroll-ic" id="scrollIc"></div>
         <div class="big">No distress call yet.</div>
-        The die face decides which framework this round tests. Roll to draw a real ticket from the
-        #support-copilot seas, then talk it through before you reveal the answer.
+        The die face picks a framework, then the game draws a unique ticket from the Workflows Troubleshooting Library.
+        Find the resolution in the library — don't open a live Clay workspace — then talk it through. There is no timer.
       </div>
 
       <div id="caseBody" hidden>
@@ -1091,24 +1102,30 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
         </div>
         <div class="ticket">
           <span class="rod rod-t" aria-hidden="true"></span><span class="rod rod-b" aria-hidden="true"></span>
-          <div class="from"><span>Customer distress call</span><span class="tk"><span id="ticketId">#WF-000</span><span class="ob-mark" id="obMark" title="Facilitator: open-bug card (swap candidate, see the rules doc)" hidden>†</span></span></div>
+          <div class="from"><span>Library ticket <span id="ticketAuthor"></span></span><span class="tk"><span id="ticketId">#--------</span><span class="ob-mark" id="obMark" title="Facilitator: open-bug card (swap candidate, see the rules doc)" hidden>†</span></span></div>
           <p id="ticketText"></p>
+          <p class="lib-prompt">Find this ticket in the <a href="https://app.notion.com/p/clayrun/0edab6bc51a6493eaad1e6a342f60065?v=e390b30f8e9740fea92869bdaf266c16" target="_blank" rel="noopener">Workflows Troubleshooting Library</a> and read how it was resolved.</p>
         </div>
+        <p class="ws-warn">Don't open a live Clay workspace. Live workspaces can leave broken workflows behind (for example, Javier's ticket: works from the Run button, fails via Claude MCP — missing work email).</p>
         <div class="reveal-wrap">
           <button class="btn btn-paper" id="revealBtn" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M2 17.6l9.6-6.4 1.6 2.4-9.6 6.4z"/><path d="M11 10.6l6.7-4.5 2.4 3.6-6.7 4.5z" opacity=".85"/><path d="M17.2 5.4l3-2 3 4.5-3 2z"/><circle cx="3" cy="19" r="1.6"/></g></svg></span>Reveal the diagnosis</button>
           <div class="reveal" id="revealBox" hidden>
-            <h4>Work the framework</h4>
+            <h4>What was checked first</h4>
             <div class="move" id="rMove"></div>
-            <h4>Where it failed</h4>
+            <h4>Resolution</h4>
             <div class="diag" id="rDiag"></div>
             <div class="verdict" id="rVerdict"></div>
-            <div class="reply"><div class="lbl">Two-sentence customer reply</div><span id="rReply"></span></div>
+            <div class="reply"><div class="lbl">Framework used</div><span id="rReply"></span></div>
             <div class="handson" id="handsOn" hidden></div>
             <p class="score-advance" id="scoreHint"></p>
-            <div class="actions">
+            <div class="actions" id="scoreActions">
               <button class="nail" id="nailBtn" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M4 10.2l12.4-5.1 1.7 4.2-12.6 4.6z"/><rect x="16.6" y="3.8" width="2.8" height="6.4" rx="1.2" transform="rotate(-22 18 7)"/><circle cx="2.8" cy="12.4" r="1.4"/></g><circle cx="9" cy="16" r="4.2" fill="none" stroke="currentColor" stroke-width="1.9"/><circle cx="9" cy="16" r="1.3" fill="currentColor"/><path d="M2 21.5h15" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></span>Nailed it · sail&nbsp;<span id="nailN">1</span></button>
               <button class="nudge" id="nudgeBtn" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="4.5" r="2.2"/><path d="M12 6.7V21M7.5 10h9M4 14.5Q4.5 21 12 21q7.5 0 8-6.5"/><path d="M2.5 15.5L4 14l1.8 1.6M21.5 15.5L20 14l-1.8 1.6"/></g></svg></span><span id="nudgeTxt">Needed a nudge · sail 1</span></button>
-              <button class="steal" id="stealBtn" type="button" hidden><span class="ico" aria-hidden="true" id="stealIc"></span><span id="stealTxt">Missed it · next crew steals it (+1 to them)</span></button>
+              <button class="nudge miss" id="missBtn" type="button"><span class="ico" aria-hidden="true" id="missIc"></span><span id="missTxt">Missed it · next crew may steal</span></button>
+            </div>
+            <div class="actions steal-offer" id="stealOffer" hidden>
+              <button class="steal" id="stealBtn" type="button"><span class="ico" aria-hidden="true" id="stealIc"></span><span id="stealTxt">Stolen · next crew sails the roll</span></button>
+              <button class="nudge" id="noStealBtn" type="button">No steal — next crew rolls</button>
             </div>
           </div>
         </div>
@@ -1131,8 +1148,9 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 <div class="win settings" id="wfOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="wfTitle">
   <div class="win-card settings-card">
     <h2 id="wfTitle">Ship's orders</h2>
-    <p class="settings-sub">Facilitator setup. Link each framework to its intentionally broken Clay workflow and write a one-line
-      "fixed when" check. Both show on the card at the reveal. Saved in this browser (localStorage), so set them up on the machine you'll present from.</p>
+    <p class="settings-sub">Optional facilitator notes, still saved in this browser. Questions now point at the
+      <a href="https://app.notion.com/p/clayrun/0edab6bc51a6493eaad1e6a342f60065?v=e390b30f8e9740fea92869bdaf266c16" target="_blank" rel="noopener">Workflows Troubleshooting Library</a>,
+      not live Clay workspaces — live workspaces can leave broken workflows behind. You can still keep personal notes per framework here if you want.</p>
     <div id="wfFields"></div>
     <div class="ob-note" id="obNote"></div>
     <div class="settings-actions">
@@ -1156,16 +1174,17 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
       <summary>How a round runs (facilitator)</summary>
       <ol>
         <li>The crew at the wheel rolls. The die face (1–6) picks the framework in play.</li>
-        <li>Read the distress call aloud. The crew works the framework out loud — name the rung or check that failed.</li>
-        <li>Reveal the diagnosis and the bug-or-config verdict, then open that framework's broken workflow and check it against its "fixed when" line. Solved it on their own? They sail the number they rolled. Needed a nudge? They sail 1.</li>
-        <li>The wheel passes to the next crew. First to the chest wins the voyage.</li>
+        <li>Read the symptom aloud. The crew finds that ticket in the <b>Workflows Troubleshooting Library</b> and works the framework out loud — do not open a live Clay workspace.</li>
+        <li>Reveal the diagnosis: what was checked first, the resolution, the framework used, and the verdict. Solved it on their own? They sail the number they rolled. Needed a nudge? They sail 1. Missed it? The next crew in turn order may steal the question and, if they get it, sail that same advance.</li>
+        <li>The wheel passes to the next crew (or, after a successful steal, to the crew after the stealer). There is no timer. First to the chest wins the voyage.</li>
         <li>Sound: the <b>Music</b> and <b>Sound effects</b> buttons (keys <b>M</b> and <b>S</b>) switch the sea shanty and the effects on or off. Music starts off; your choice is remembered in this browser.</li>
       </ol>
     </details>
     <p class="log-about"><b>About this game:</b> Roll to Resolve is the <b>Session&nbsp;2 game for the PSS Workflows training</b>
     on <b>Wednesday, November&nbsp;11, 2026</b>. The die faces are the five frameworks from the <b>PSS Workflows Enablement Planning</b> doc
-    (plus a Kraken "Bug or Config?" face), the distress calls mirror real #support-copilot cases, and each framework links to an
-    intentionally broken Clay workflow (facilitators set these with the <b>Workflows</b> button).</p>
+    (plus a Kraken "Bug or Config?" face). Every ticket is a real entry from the <b>Workflows Troubleshooting Library</b>.
+    Crews look up the resolution there — live workspaces can leave broken workflows behind (for example, Javier's ticket:
+    works from the Run button, fails via Claude MCP — missing work email).</p>
     <div class="settings-actions">
       <button class="btn" id="logDone" type="button">Back to the voyage</button>
     </div>
@@ -1462,6 +1481,71 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   };
   function fwIcon(key){ return FW_ICON[key]||""; }
   // Stop-effect icons (same palette + ink outline)
+  ART.barnacle='<svg viewBox="0 0 40 40" class="art"><circle'+O+' cx="20" cy="22" r="12" fill="var(--c-card)"/>'
+    +'<g fill="var(--c-ink)"><circle cx="20" cy="14" r="3.2"/><circle cx="13.2" cy="18.2" r="3"/><circle cx="26.8" cy="18.2" r="3"/><circle cx="15" cy="26.5" r="3.1"/><circle cx="25" cy="26.5" r="3.1"/><circle cx="20" cy="21.5" r="3.4"/></g>'
+    +'<g fill="var(--c-parchment)"><circle cx="20" cy="14" r="1.2"/><circle cx="13.2" cy="18.2" r="1.1"/><circle cx="26.8" cy="18.2" r="1.1"/><circle cx="15" cy="26.5" r="1.1"/><circle cx="25" cy="26.5" r="1.1"/><circle cx="20" cy="21.5" r="1.3"/></g></svg>';
+  ART.spyglass='<svg viewBox="0 0 40 40" class="art"><g transform="rotate(-38 20 20)">'
+    +'<rect'+O+' x="4" y="17" width="16" height="6" rx="1" fill="var(--c-wood)"/>'
+    +'<rect'+O+' x="18" y="15.5" width="14" height="9" rx="1" fill="var(--c-ink)"/>'
+    +'<circle'+O+' cx="33.5" cy="20" r="5.2" fill="var(--c-gold)"/>'
+    +'<circle cx="33.5" cy="20" r="2.4" fill="var(--c-sealine)"/>'
+    +'<rect'+O+' x="8" y="16" width="3" height="8" fill="var(--c-gold)"/></g></svg>';
+  ART.mermaid='<svg viewBox="0 0 40 40" class="art"><circle'+O+' cx="20" cy="10" r="5.5" fill="var(--c-card)"/>'
+    +'<path'+O+' d="M16 15 Q14 22 17 28 L23 28 Q26 22 24 15Z" fill="var(--c-card)"/>'
+    +'<path'+O+' d="M17 27 Q12 32 8 30 Q14 36 20 31 Q26 36 32 30 Q28 32 23 27Z" fill="var(--crew1)"/>'
+    +'<path d="M16 9 Q20 6 24 9" stroke="var(--c-ink)" stroke-width="2" fill="none"/>'
+    +'<circle cx="18.2" cy="10" r="1" fill="var(--c-ink)"/><circle cx="21.8" cy="10" r="1" fill="var(--c-ink)"/></svg>';
+  ART.bottle='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M16 6 h8 v5 l3 4 v20 a4 4 0 0 1-4 4 h-6 a4 4 0 0 1-4-4 V15 l3-4Z" fill="var(--c-sealine)"/>'
+    +'<rect'+O+' x="16" y="4" width="8" height="5" rx="1" fill="var(--c-wood)"/>'
+    +'<path d="M15 18 h10" stroke="var(--c-card)" stroke-width="2" opacity=".7"/>'
+    +'<circle cx="22" cy="26" r="2" fill="var(--c-card)" opacity=".55"/></svg>';
+  ART.keg='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M10 10 Q20 6 30 10 L30 30 Q20 34 10 30Z" fill="var(--c-wood)"/>'
+    +'<path d="M11 16 H29 M11 24 H29" stroke="var(--c-gold)" stroke-width="2.4"/>'
+    +'<path d="M20 8 V32" stroke="var(--wood-shade)" stroke-width="2"/>'
+    +'<circle'+O+' cx="20" cy="20" r="3.2" fill="var(--c-gold)"/></svg>';
+  ART.cutlass='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M8 30 L26 8 Q32 6 33 12 L14 33Z" fill="var(--c-sealine)"/>'
+    +'<path d="M11 27 L28 11" stroke="var(--c-card)" stroke-width="1.6"/>'
+    +'<rect'+O+' x="6" y="28" width="12" height="4" rx="1" transform="rotate(-40 12 30)" fill="var(--c-gold)"/>'
+    +'<rect'+O+' x="5" y="31" width="5" height="8" rx="1.5" transform="rotate(-40 7 35)" fill="var(--c-wood)"/></svg>';
+  ART.crow='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M22 14 Q12 16 10 26 Q18 22 24 24 Q28 18 34 20 Q30 14 22 14Z" fill="var(--c-ink)"/>'
+    +'<path'+O+' d="M22 14 Q26 8 24 6 Q22 10 20 12Z" fill="var(--c-ink)"/>'
+    +'<path'+O+' d="M10 26 Q8 32 14 30 L16 26Z" fill="var(--c-ink)"/>'
+    +'<circle cx="26" cy="12.5" r="1.5" fill="var(--c-gold)"/>'
+    +'<path'+O+' d="M24 8 L31 9 L25 11Z" fill="var(--c-gold)"/>'
+    +'<path'+O+' d="M6 32 H34" fill="none" stroke-width="3"/></svg>';
+  ART.siren='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M12 32 Q12 14 20 10 Q28 14 28 32Z" fill="var(--c-card)"/>'
+    +'<path'+O+' d="M12 32 H28 L24 36 H16Z" fill="var(--c-wood)"/>'
+    +'<path d="M16 16 Q20 13 24 16 M15 21 Q20 18 25 21 M16 26 Q20 23 24 26" stroke="var(--c-ink)" stroke-width="2" fill="none" stroke-linecap="round"/></svg>';
+  ART.sextant='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M8 30 Q20 8 32 30" fill="none" stroke-width="3.2"/>'
+    +'<path'+O+' d="M9 28 L31 28 L28 33 H12Z" fill="var(--c-wood)"/>'
+    +'<circle'+O+' cx="20" cy="16" r="3.4" fill="var(--c-gold)"/>'
+    +'<path d="M20 19 V28 M14 24 L26 24" stroke="var(--c-ink)" stroke-width="2.4" stroke-linecap="round"/></svg>';
+  ART.cave='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M4 34 L8 16 Q14 6 20 8 Q26 6 32 16 L36 34Z" fill="var(--c-ink)"/>'
+    +'<path d="M13 34 Q16 18 20 16 Q24 18 27 34" fill="var(--c-parchment)" stroke="var(--c-ink)" stroke-width="2"/>'
+    +'<path d="M4 34 H36" stroke="var(--c-ink)" stroke-width="3" stroke-linecap="round"/></svg>';
+  ART.pearl='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M8 24 Q8 14 20 12 Q32 14 32 24 Q32 34 20 36 Q8 34 8 24Z" fill="var(--c-sealine)"/>'
+    +'<path'+O+' d="M10 22 Q20 16 30 22 Q20 26 10 22Z" fill="var(--c-card)"/>'
+    +'<circle'+O+' cx="20" cy="20" r="6.5" fill="var(--c-card)"/>'
+    +'<circle cx="18" cy="18" r="2" fill="var(--c-sealine)" opacity=".5"/></svg>';
+  ART.storm='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M8 18 a6 6 0 0 1 4-10 a7.5 7.5 0 0 1 14 0 a6 6 0 0 1 7 8 H10 a4 4 0 0 1-2-2z" fill="var(--c-ink)"/>'
+    +'<path'+O+' d="M20 20 L14 28 H20 L16 36 L28 24 H21 L26 20Z" fill="var(--c-gold)"/></svg>';
+  ART.whirl='<svg viewBox="0 0 40 40" class="art"><path d="M20 6 C32 6 34 18 24 20 C12 22 14 10 24 10 C30 10 30 16 24 16" fill="none" stroke="var(--c-ink)" stroke-width="3.2" stroke-linecap="round"/>'
+    +'<path d="M20 34 C8 34 6 22 16 20 C28 18 26 30 16 30 C10 30 10 24 16 24" fill="none" stroke="var(--c-sealine)" stroke-width="3.2" stroke-linecap="round"/>'
+    +'<circle'+O+' cx="20" cy="20" r="3" fill="var(--c-ink)"/></svg>';
+  ART.harpoon='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M18 6 L22 6 L22 30 L18 30Z" fill="var(--c-wood)"/>'
+    +'<path'+O+' d="M13 8 L20 2 L27 8 L22 8 L22 12 L18 12 L18 8Z" fill="var(--c-ink)"/>'
+    +'<path'+O+' d="M16 30 H24 L22 36 H18Z" fill="var(--c-gold)"/></svg>';
+  ART.dinghy='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M6 24 L34 24 L30 32 Q20 36 10 32Z" fill="var(--c-wood)"/>'
+    +'<path'+O+' d="M19 10 V24" fill="none" stroke-width="3"/>'
+    +'<path'+O+' d="M19 11 L30 22 L19 22Z" fill="var(--c-card)"/>'
+    +'<path d="M4 34 Q20 30 36 34" stroke="var(--c-ink)" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>';
+  ART.mapx='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M7 10 L18 8 L22 12 L33 9 L33 32 L22 30 L18 34 L7 31Z" fill="var(--c-card)"/>'
+    +'<path d="M18 8 V34 M22 12 V30" stroke="var(--c-ink)" stroke-width="1.6"/>'
+    +'<path d="M14 18 L26 28 M26 18 L14 28" stroke="var(--c-kraken)" stroke-width="3.2" stroke-linecap="round"/></svg>';
+  ART.fangs='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M6 32 L10 14 L16 22 L20 8 L24 22 L30 14 L34 32Z" fill="var(--c-ink)"/>'
+    +'<path d="M16 22 L20 8 L24 22" fill="var(--c-parchment)" stroke="var(--c-ink)" stroke-width="1.6"/>'
+    +'<path d="M4 34 Q20 28 36 34" stroke="var(--c-ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>';
+
   ART.fog='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M8 21 a6.5 6.5 0 0 1 4-11.5 a8 8 0 0 1 14.5-1 a6.5 6.5 0 0 1 8 7.5 a5.2 5.2 0 0 1-1.5 10H10a4 4 0 0 1-2-5z" fill="var(--c-card)"/>'
     +'<path d="M22 10.5 a6.5 6.5 0 0 1 9 6" stroke="var(--card-shade)" stroke-width="2.4" fill="none" stroke-linecap="round"/>'
     +'<g stroke="var(--c-ink)" stroke-width="3.2" stroke-linecap="round"><path d="M4 30h20M28 30h8M9 36h26"/></g></svg>';
@@ -1500,14 +1584,14 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     +'<circle'+O+' cx="30" cy="33" r="3.4" fill="var(--c-ink)"/><circle'+O+' cx="36" cy="33" r="3" fill="var(--c-ink)"/></svg>';
   var FX={
     fog:{icon:"fog", c:"var(--c-sealine)", stop:"Foggy Narrows", tag:"No hints",
-      land:function(n){ return n+" sails into the fog. On their next turn there are no hints: a nudge counts as a miss."; },
-      now:function(n){ return "No hints this turn. Solve it unaided, or it's a miss and "+n+" stays put."; }},
+      land:function(n){ return n+" sails into the fog. On their next turn there are no hints: a miss stays put, and the next crew may steal."; },
+      now:function(n){ return "No hints this turn. Solve it unaided, or it's a miss: "+n+" stays put and the next crew may steal the advance."; }},
     kraken:{icon:"kraken", c:"var(--c-kraken)", stop:"Kraken Deep", tag:"Next roll: Kraken",
       land:function(n){ return n+" is over the Kraken's lair. Their next roll is a Kraken card."; },
       now:function(n){ return "The Kraken grabs "+n+"'s roll. It's a Kraken card: bug or config?"; }},
     mutiny:{icon:"mutiny", c:"var(--c-ink)", stop:"Mutiny Bay", tag:"Miss = steal",
       land:function(n){ return n+" drops anchor in Mutiny Bay. If they miss next turn, the next crew can steal it."; },
-      now:function(n,nx){ return "If "+n+" misses, "+nx+" may steal the answer for +1 space. Ask them before you reveal."; }}
+      now:function(n,nx){ return "If "+n+" misses, "+nx+" may steal the question and sail the number rolled."; }}
   };
 
   // ---------- Game data ----------
@@ -1515,15 +1599,32 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     {name:"Set Sail", icon:"anchor", start:true},
     {name:"Tide Pools", icon:"wave"},
     {name:"Gull Rock", icon:"gull"},
-    {name:"Shipwreck Shoals", icon:"wreck"},
+    {name:"Barnacles", icon:"barnacle"},
+    {name:"Shipwreck Shoals", icon:"wreck", danger:true},
+    {name:"Spyglass", icon:"spyglass"},
     {name:"Smuggler's Cove", icon:"cove"},
     {name:"Foggy Narrows", icon:"fog", fx:"fog"},
-    {name:"Kraken Deep", icon:"kraken", fx:"kraken"},
-    {name:"Dead Man's Reef", icon:"reef"},
+    {name:"Mermaid Shoal", icon:"mermaid"},
+    {name:"Dead Man's Reef", icon:"reef", danger:true},
     {name:"Parrot Isle", icon:"parrot"},
-    {name:"Mutiny Bay", icon:"mutiny", fx:"mutiny"},
-    {name:"Skull Point", icon:"skull"},
+    {name:"Rum Runner", icon:"bottle"},
+    {name:"Powder Keg", icon:"keg"},
+    {name:"Cutlass Creek", icon:"cutlass"},
+    {name:"Kraken Deep", icon:"kraken", fx:"kraken", danger:true},
+    {name:"Crow's Nest", icon:"crow"},
+    {name:"Siren Sound", icon:"siren"},
+    {name:"Sextant Cay", icon:"sextant"},
+    {name:"Skull Point", icon:"skull", danger:true},
     {name:"Cannon Ridge", icon:"cannon"},
+    {name:"Hidden Cove", icon:"cave"},
+    {name:"Mutiny Bay", icon:"mutiny", fx:"mutiny"},
+    {name:"Pearl Reef", icon:"pearl"},
+    {name:"Storm Cape", icon:"storm", danger:true},
+    {name:"Whirlpool", icon:"whirl", danger:true},
+    {name:"Harpoon", icon:"harpoon"},
+    {name:"Jolly Boat", icon:"dinghy"},
+    {name:"Map Atoll", icon:"mapx"},
+    {name:"Dragon's Teeth", icon:"fangs", danger:true},
     {name:"Treasure", icon:"chest", chest:true}
   ];
   var TRACK = NODES.length - 1; // reach last node to win
@@ -1536,7 +1637,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     {key:"observe",  name:"Observability", tag:"Slow, Stuck, or Gone"},
     {key:"wild",     name:"Kraken: Bug or Config?", tag:"Snap verdict — the framework's hidden"}
   ];
-  var DANGER={3:1,6:1,7:1,10:1}; // danger stops get the Kraken-red ring
+  var DANGER={}; NODES.forEach(function(nd,i){ if(nd.danger) DANGER[i]=1; }); // danger stops get the Kraken-red ring
 
   var V = {
     config:{cls:"config", label:"Config / expected behavior"},
@@ -1544,123 +1645,26 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     admin:{cls:"admin", label:"Customer's CRM admin"}
   };
 
-  var DECKS = {
-    triggers:[
-      {id:"WF-118", t:'"Why does this workflow have segment runs? The user is only triggering manual runs."',
-        move:"Walk the ladder: which trigger actually fired?",
-        d:"Rung 3 — trigger rules. A second, live segment trigger is attached alongside the manual one, so entries into the segment are firing runs the user didn't expect.",
-        v:"config", r:"Those runs are coming from a segment trigger that's still live on this workflow, not from manual runs. Pause or remove that trigger if you only want manual runs, and the extra runs stop."},
-      {id:"WF-204", t:'"The workflow shows 310k runs but the segment only had about 230k records."',
-        move:"Ladder in reverse — why MORE runs than expected?",
-        d:"Rung 3/5 — records re-entered the segment and a second trigger is firing. Re-qualifying contacts each create a new run, so the total climbs past the one-time segment size.",
-        v:"config", r:"The count is higher than the segment size because contacts that leave and re-qualify trigger a fresh run each time, and a second trigger is also firing. The totals are expected given the re-entries."},
-      {id:"WF-087", t:'"Why didn’t this contact run automatically when he was added to the segment?"',
-        move:"Rung 3 — fires on entry, or for existing members at publish?",
-        d:"Rung 3 — the trigger fires on NEW entries. This contact was already in the segment when the workflow was published, so he was never treated as a new entry.",
-        v:"config", r:"The trigger only fires for contacts who enter the segment after publish, so anyone already in it at that moment is skipped. Re-add him or run him manually to process him now."},
-      {id:"WF-151", t:'"Incoming webhook requests are just getting dropped — nothing runs."',
-        move:"Rung 2 — was there a live trigger to catch it?",
-        d:"Rung 2 — the workflow was never published, so the webhook trigger wasn't live. The POSTs arrived but had no live trigger to catch them.",
-        v:"config", r:"The webhook requests are arriving fine, but the workflow isn't published, so there's no live trigger to catch them. Publish it and the incoming events will start creating runs."},
-      {id:"WF-233", t:'"‘Run 10’ test says it accepted the rows, but no runs ever appear in the Runs list."',
-        move:"Rungs 1–3 check out, rung 4 fails — that's the signal.",
-        d:"Rung 4 — the trigger fired and the rows were accepted, but no run object was ever created. Everything upstream is correct.",
-        v:"bug", r:"I've confirmed the rows were accepted but no run was created, which shouldn't happen. I'm escalating this with the run details so engineering can dig into why the runs aren't being generated."}
-    ],
-    versions:[
-      {id:"WF-061", t:'"I updated the Slack alert copy, but the alerts customers get still look the same."',
-        move:"Is the version they see the version that ran?",
-        d:"Viewing vs. Live — the edit is sitting in the draft and was never published, so live runs still use the old published version.",
-        v:"config", r:"Your change is saved in the draft, but live runs are still using the last published version. Hit Publish and new alerts will use the updated copy."},
-      {id:"WF-092", t:'"This workflow doesn’t have a publish button. Is there a config I’m missing?"',
-        move:"Which version are they looking at vs. what's live?",
-        d:"Viewing — the publish control only appears when the draft has changes to push live. Confirm their draft/live state.",
-        v:"config", r:"Nothing's missing — the publish button only shows when there are draft changes to push live. Make an edit and it'll appear, or you're already fully published."},
-      {id:"WF-140", t:'"I resumed my workflow and it failed with ‘Trigger not found.’"',
-        move:"Diff the versions — what changed between Live and the draft?",
-        d:"Diff — a V2 draft removed the live segment trigger. Resuming tried to use a trigger the current version no longer has.",
-        v:"config", r:"The V2 draft dropped the segment trigger the live version was using, so resume can't find it. Add the trigger back in the draft and republish, and resume will work."},
-      {id:"WF-177", t:'"Why are both of my workflows pushing to the same HeyReach campaign?"',
-        move:"Shared parts — was this made by duplicating?",
-        d:"Shared parts — the workflow was created by duplicating another, and duplicates share nodes with the original (WOR2-1615). Editing one changes the other.",
-        v:"bug", r:"These were duplicated from each other, and duplicated workflows currently share the same underlying nodes, so they point at the same campaign. I'm flagging it (WOR2-1615); for now, rebuild the second one fresh instead of duplicating."},
-      {id:"WF-199", t:'"I restored V1 but the lookup steps I’d deleted didn’t come back."',
-        move:"Teach what Restore does, then check if it's really failing.",
-        d:"Restore replaces the DRAFT and doesn't publish. Here it also couldn't rebuild lookup steps that had been edited out — that part is a confirmed bug.",
-        v:"bug", r:"First, Restore only replaces your draft — it doesn't publish anything. Beyond that, the lookup steps genuinely aren't being rebuilt on restore, so I'm escalating that as a bug with your workflow ID."}
-    ],
-    data:[
-      {id:"WF-112", t:'"Find Work Email is failing for every single contact after Find Contacts."',
-        move:"Follow the value — does the shape match what the step expects?",
-        d:'Shape — Find Contacts returns a LIST, but "Repeat for each item" is off on Find Work Email, so it gets a list where it expects one person.',
-        v:"config", r:'Find Contacts returns a list of people, so Find Work Email needs "Repeat for each item" turned on to process them one at a time. Toggle that and it’ll run per contact.'},
-      {id:"WF-128", t:'"I can’t reference specific fields from the Salesforce Lookup node like I can in a table."',
-        move:"Follow the value — is the field Exposed as an output?",
-        d:"Exposed — the lookup node only declares a subset of fields as outputs (e.g. just Account ID). Fields that aren't selected as outputs can't be referenced downstream.",
-        v:"config", r:"The lookup only exposes the outputs you've selected on that node, which is why most fields aren't referenceable. Add the fields you need to the node's outputs and they'll show up downstream."},
-      {id:"WF-163", t:'"The downstream step keeps erroring with accountId = NaN."',
-        move:"Follow the value backward to where it stopped being a number.",
-        d:"Shape — a value that should be numeric is arriving as NaN, meaning an upstream step produced an empty/invalid value. Fix it at the source node, not at the erroring step.",
-        v:"config", r:"The accountId is coming through empty from the upstream step, which is why you see NaN. Fix the mapping on that earlier node so it always passes a valid ID, rather than patching the step that errors."},
-      {id:"WF-185", t:'"The next step breaks because the model output looks cut off halfway through the JSON."',
-        move:"Shape — is the output complete and the type the step expects?",
-        d:"Shape — Opus output is truncating at the 4,096-token cap, so the JSON is incomplete and breaks the schema the next step needs.",
-        v:"config", r:"The model output is hitting the 4,096-token limit and getting cut off, so the JSON is incomplete for the next step. Tighten the prompt to return less, or split the output so each piece fits under the cap."},
-      {id:"WF-141", t:'"A routing node is reading blank inputs even though the data is clearly there."',
-        move:"Connected — is the upstream node actually on this record's path?",
-        d:"Connected — the node is reading from a trigger/branch that didn't fire for this record, so its inputs are wired to a path that never ran.",
-        v:"config", r:"That node is pulling its inputs from a branch that didn't run for this record, so they come through blank. Re-point it to the node that's actually on this record's path."}
-    ],
-    writebk:[
-      {id:"WF-073", t:'"This workflow enriched 111 records with a work email, but none were written back to the segment."',
-        move:"Send, Accept, Land, Stick — how far did it get?",
-        d:"Land — the step ran, but the write-back isn't landing on the segment records. Check the match/upsert key and whether the field is set to always write.",
-        v:"config", r:"The enrichment ran, but the write-back isn't matching the records in the segment, so nothing lands. Check the match key on the write step — once it lines up, the 111 emails will populate."},
-      {id:"WF-095", t:'"HubSpot reports success, but the job-title property just stopped updating."',
-        move:"Land — right record AND the exact right field?",
-        d:"Land — the mapping is pointing at a similarly named HubSpot property (a near-duplicate), so the write succeeds but updates the wrong field.",
-        v:"config", r:"The write is succeeding, but it's mapped to a look-alike property rather than the real job-title field. Repoint the mapping to the exact property and titles will update again."},
-      {id:"WF-108", t:'"Only 3 of the 6 fields I mapped are showing up in Audiences."',
-        move:"Send, then Land — what actually made it onto the record?",
-        d:"Land — 3 fields aren't landing: likely unmapped/undeclared fields or a type mismatch on those three. Confirm each is sent and accepted.",
-        v:"config", r:"Three of the fields aren't landing because they're either not mapped through or the type doesn't match what Audiences expects. Line those three up on the write step and all six will come through."},
-      {id:"WF-130", t:'"Salesforce write is failing with INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE."',
-        move:"Accept — did the destination reject it?",
-        d:"Accept — Salesforce rejected the write on a permissions/cross-reference rule enforced by the customer's own setup, not Clay.",
-        v:"admin", r:"Salesforce is rejecting the write because of a cross-reference permission on that object, which lives in your SF setup. Your Salesforce admin will need to grant access to that related record, then the write will go through."},
-      {id:"WF-156", t:'"How do we keep the workflow running when Apollo drops its auth mid-run?"',
-        move:"Connection health — a dead integration can stall the whole run.",
-        d:"Connection health — an integration needing re-auth can halt the workflow. Re-authenticate, and build a fallback/branch so one bad auth doesn't stop everything.",
-        v:"config", r:"When Apollo loses auth it can stall the whole workflow, so first re-connect it. To make it resilient, add a fallback branch so a single integration failure routes around instead of stopping the run."}
-    ],
-    observe:[
-      {id:"WF-212", t:'"This run has been ‘running’ on Find People for two days."',
-        move:"Slow, Stuck, or Gone? This one's Stuck.",
-        d:"Stuck — a step awaiting an external callback past the one-hour async limit ends in ERROR_TIMEOUT. Check which step is waiting and on what service.",
-        v:"config", r:"That step is stuck waiting on an external callback, and async steps time out after an hour with ERROR_TIMEOUT rather than running for days. Stop and re-run it, and if it keeps hanging we'll look at the external service."},
-      {id:"WF-224", t:'"My runs are missing from the Runs list — and ‘Run analytics query failed.’"',
-        move:"Gone — back to trigger ladder rung 4.",
-        d:"Gone — expected runs aren't appearing. Confirm at the trigger ladder whether runs were created; the Runs list itself has dropped entries before, which points to a bug.",
-        v:"bug", r:"I've confirmed the runs should exist but they're missing from the list and analytics is erroring, which has happened as a platform issue before. I'm escalating with your workflow ID so we can recover the run data."},
-      {id:"WF-240", t:'"Why does a segment of 1,175 show 40,000 runs?"',
-        move:"Miscounted — what inflates the total?",
-        d:"Miscounted — multiple triggers, records re-entering the segment, duplicates, and manual runs layered on automatic ones all add up well beyond the segment size.",
-        v:"config", r:"The 40,000 comes from a mix of multiple triggers, contacts re-entering the segment, and manual runs on top of automatic ones. It's expected given those overlaps, not a runaway workflow."},
-      {id:"WF-168", t:'"The whole workflow is just really slow and I don’t know why."',
-        move:"Slow — find the slowest node, separate queue wait from run time.",
-        d:"Slow — use per-node timing (clay workflows analysis, p50–p99) to find the slowest step, and separate queue wait from execution. A big chunk is often just queue time.",
-        v:"config", r:"Most of the time is concentrated in one node and partly in queue wait, not evenly across the run. Using per-node timing we can target that step — often a rate limit or model choice — rather than the workflow as a whole."}
-    ]
-  };
-  function wildCard(){
-    var keys=["triggers","versions","data","writebk","observe"];
-    var k=keys[Math.floor(Math.random()*keys.length)];
-    var deck=DECKS[k];
-    return {wild:true, wildKey:k, src:deck[Math.floor(Math.random()*deck.length)]};
-  }
+  var LIB_URL="https://app.notion.com/p/clayrun/0edab6bc51a6493eaad1e6a342f60065?v=e390b30f8e9740fea92869bdaf266c16";
+  var TICKETS=[{"id": "0q0a5o9b5qevphqj7d7g", "author": "Jon Rene", "fw": "writebk", "framework": "Write-backs", "secondary": "Passing data", "failure": "Stick", "symptom": "Customer's Audiences write-back says \"3 fields updated,\" but two of the fields didn't clear.", "first": "the write step in the run trace. All 3 runs had \"Ignore blank values\" off and really sent the blanks (empty twice, null once), so Send and Accept looked fine.", "resolution": "testing the fix myself once engineering said it shipped. Write to Audiences with write rule \"Always\" still didn't clear a field mapped from an empty segment field, because a missing value is dropped before the node and isn't the same as \"\". A Code step returning \"\" mapped in instead did clear it.", "next": "sending my results and questions to eng on DIN-6451. They confirmed the customer should switch to Write to Audiences with \"Always\" (text clears with \"\", number with null) and merged a fix so missing values clear too. Next, I'm sending the customer those steps.", "verdict": "Bug", "status": "Escalated", "url": "https://app.notion.com/4147e66eb01481469733f140243a1b07", "overview": "The customer's dedup workflow resets three duplicate fields on an account with \"Ignore blank values\" off. Every run reported success, but only the true/false field cleared; the text and number fields kept their old values. A suggestion to send null instead didn't help, so they asked why the fields won't clear."}, {"id": "3g158w7e1ub0sc63cp14", "author": "Suzan Sadek", "fw": "data", "framework": "Passing data", "secondary": "", "failure": "Is the value in the right shape?", "symptom": "Customer saw a JSON wrapper around their workflow function's text output in Copilot's raw tool-response card and asked how to remove it.", "first": "The automated assistant first treated this as an AI column output and suggested extracting the .response field into a plain-text column. The customer clarified the output came from a workflow function and appeared as text but with a JSON wrapper in the Copilot agent.", "resolution": "The .response tip applies only to AI columns and does not help here. The wrapper comes from MCP's output formatting, no Clay setting removes it, and this is already tracked as a known engineering issue.", "next": "The customer was told their setup is correct and that there is no workaround for now. Their conversation was linked to the open engineering ticket so they hear back when a fix ships.", "verdict": "Bug", "status": "Escalated", "url": "https://app.notion.com/4147e66eb01481188feff894b271c993", "overview": "The customer has a workflow function that returns a single text output, which a Copilot agent calls through Clay's MCP. In Copilot's raw tool-response card the text appears wrapped in a JSON object. They asked whether the wrapper can be removed and how to add a plain text node."}, {"id": "4a87t7b3p3hk86qg1380", "author": "Tyler Holle", "fw": "data", "framework": "Passing data", "secondary": "Observability", "failure": "Did the record reach the step?", "symptom": "Customer's Claygent worked standalone but failed within about 450ms inside a Workflow with a generic AI action error, even though inputs resolved and the prior step succeeded.", "first": "The customer confirmed the inputs resolved in the run trace and that the preceding ICP Classification step succeeded. The initial support replies pointed to the per-row table error and an OpenAI usage tier limit, but the customer was on Clay's own model and credits, so that did not apply.", "resolution": "The failure was identified as a Workflow execution bug where the prompt was not passed to the provider when the step ran. It was not caused by the customer's configuration and was distinct from the existing tickets checked.", "next": "The team shared a table-based workaround, then told the customer a fix was live and asked them to refresh and rerun the Workflow. The customer did not reply, and the conversation auto-closed. The team had not yet found the exact ticket for the fix.", "verdict": "Bug", "status": "Resolved", "url": "https://app.notion.com/4137e66eb0148108ab52f0c33427037a", "overview": "The customer built a Signal Detection Claygent using Clay's Argon model that returns structured research output when tested alone. Inside a Workflow, the same agent, both as a linked saved Claygent and as a native workflow agent, failed almost immediately with a generic error. They asked support to check the Workflow runtime logs and explain why it only fails in a Workflow."}, {"id": "5mdxh0zvk20hjaxr78js", "author": "Smit Patel", "fw": "observe", "framework": "Observability", "secondary": "Triggers", "failure": "Missing", "symptom": "Customer's workflow test wouldn't run on a manual trigger, past runs were grayed out with no explanation, and the workflow canvas was badly jumbled.", "first": "Why the test didn't fire on the manual trigger.", "resolution": "Separating the three problems. The jumbled canvas came from building through Sculptor/CLI and wasn't a functional break.", "next": "Using the clean-up option to tidy the workflow, then treating the manual-trigger and grayed-out-run problems as bugs.", "verdict": "Bug", "status": "Resolved", "url": "https://app.notion.com/4137e66eb014815d9cf9cdbfd54af14d", "overview": "The customer got in touch because their workflow wasn't behaving and testing was stuck. Three problems were overlapping: (1) the test didn't run on a manual trigger; (2) runs were grayed out because other test runs were still running in the background, and nothing in the UI said so, so you only found it by digging into the code; (3) the workflow was built through Sculptor/CLI, which left the canvas very messy. #3 was a layout problem, not a broken workflow, and the clean-up option fixed it. #1 and #2 were niche bugs that needed a deep dive."}, {"id": "7xm4q62mao6ze7yg2zvm", "author": "Krithik Gopinath", "fw": "data", "framework": "Passing data", "secondary": "", "failure": "Is the input mapped to the right source?", "symptom": "Customer's workflow found 5 qualified security people for a company where their table's enrichment found 97.", "first": "The workflow's setup. The \"Verify official company domain\" Claygent resolved a domain and everything downstream counted from it. With the customer's OK, replaced it with a Claygent that finds the company LinkedIn URL from name + location, with the same verification step, and re-pointed downstream nodes. A test run counted from the LinkedIn URL (50 security people); the last node's Count Method and Count Identifier inputs confirm the identifier used.", "resolution": "Two different companies being counted. The workflow resolved the real company from the name and correctly found 5. The table's domain waterfall had returned yahoo.com for that company name (likely from a Yahoo Finance quote page, root domain taken), so the table's 97 were Yahoo employees. The workflow was right; the table enrichment was wrong. The yahoo.com result is a provider data-quality issue, not a workflow bug.", "next": "Explained that the workflow's output was the accurate one and the table's domain needed cleanup. Sent the bad domain retrieval to the team as data feedback. Recommended running the workflow directly off the CSV (or an Audiences segment / sourced company list) rather than duplicating the logic in each table, since its code-level checks on the retrieved domain/LinkedIn URL make it more reliable. Customer agreed and is cleaning up the table's domain errors.", "verdict": "User Error", "status": "Resolved", "url": "https://app.notion.com/4147e66eb0148135b6a8e78ea686d770", "overview": "The customer has a table that counts security roles per company and a workflow that does the same with geo-concentration checks. They first asked for the workflow to count roles from the company's LinkedIn URL instead of its domain, so it would match the table. After that change, the workflow's \"qualified security people\" still differed from the table's \"security role count\" for some rows (97 vs 5), and they asked which side needed fixing."}, {"id": "ezaf96z57vtkw4itq7ni", "author": "Peter Johnston", "fw": "writebk", "framework": "Write-backs", "secondary": "Observability", "failure": "Accept", "symptom": "Customer's workflow failed with a rate limit error when adding prospects to a Gong flow, although adding contacts manually or from a table worked without errors.", "first": "Opened the failed run and looked at the step that adds contacts to the Gong flow. Every attempt on all 8 contacts returned HTTP 429 \"Access key API calls limit exceeded\" from Gong, each tried 6 times about 1 second apart.", "resolution": "The failure came from Gong's API call limit on the customer's access key, not from the workflow setup or a Clay bug. The workflow node stops retrying after about 7 seconds even though its message says \"Rate limited, retrying...\", which was logged as product feedback.", "next": "Customer was told to re-run the failed batch now that the limit has reset. If it recurs, their Gong admin should check API usage on that key and what else shares it, and they should use smaller batches or more time between them. The customer's first retest with one contact worked, and they did not report back on a larger batch before the conversation auto-closed.", "verdict": "User Error", "status": "Resolved", "url": "https://app.notion.com/4137e66eb014819ab5c1ee053061b535", "overview": "The customer runs a workflow that loads contacts into a Gong flow in batches. A run failed with a rate limit error at the step that adds contacts to the Gong flow, while manual adds and table adds worked. They asked whether something in the workflow setup was wrong."}, {"id": "gjlbjkzjn16fkmul1sl2", "author": "Ryan Phung", "fw": "triggers", "framework": "Triggers", "secondary": "", "failure": "", "symptom": "Customer could not save a condition on a conditional node in her workflow, as a rule or as Python code, and the node would not save in either mode.", "first": "Support looked at the workflow and the node's save attempts and saw nothing wrong with the setup. Request logs showed every save to the node was rejected with a 409 conflict, 17 attempts in one day and none successful.", "resolution": "Support confirmed this was a product defect and reproduced it in a separate workspace: switching a wired conditional node from Rules to Code was refused. The customer was told to delete and rebuild the node, which clears the stale connections. The saved rule also compared the count to the text \"<5\" with an equals check, so it needed to be a numeric less-than comparison with a value of 5.", "next": "The bug was escalated to engineering and a fix was merged. The customer was later told the bug was fixed and the ticket was closed.", "verdict": "Bug", "status": "Resolved", "url": "https://app.notion.com/4137e66eb01481048ec7fc08ca3d874b", "overview": "The customer was building a conditional node that should only let a function run when a CRM contact lookup found fewer than 5 records. The node would not save in either Rules or Python code mode. She asked how to get the condition to save correctly."}, {"id": "i19fcszwour55sij9rx8", "author": "Adira Sklar", "fw": "writebk", "framework": "Write-backs", "secondary": "Passing data", "failure": "Accept", "symptom": "Customer’s people sent from Clay tables to Audiences had an empty native Company column, and the table action had no Company association field to fill it.", "first": "I checked the customer’s People audience and the table action. The Company column was empty, and the action had no Company association field. I learned that companies are not automatically associated (even if the record has a company name) unless the people go directly from a Find People search to Audiences, or the company ID was linked in the origin table through an Upsert or Create Audiences record enrichment.", "resolution": "Set it up and test it on a few rows, then have the customer take a look. They were happy to see those company icons populate.", "next": "I  walked the customer through finishing the field mapping. The node needed at least one field mapped, so they mapped the domain, which was already set up. Then they set Company association → Company ID → Look up in Audiences → id, which is the step that actually fills the native Company column. They went to Review & run and ran the workflow on all their people. I also gave them a prevention tip for next time: do the lookup and set the association in the table before sending people to Audiences.", "verdict": "User Error", "status": "Resolved", "url": "https://app.notion.com/4147e66eb014810bb451dbd1bbc5bd22", "overview": "The customer sent people from several Clay tables into the People audience and wanted the native Company column filled, not just a company-name text field. The Create or update Audiences record action had no Company association option, and Fin’s first suggestions pointed to fields that weren’t there."}, {"id": "ios9cjdcnckym8g50zkl", "author": "Atharv Kulkarni", "fw": "data", "framework": "Passing data", "secondary": "Triggers", "failure": "Is the input mapped to the right source?", "symptom": "Customer saw 1 of 10 test workflow runs fail and expected it to re-run automatically, then asked why 4 Salesforce-sourced records reportedly had no company identifier.", "first": "Opened the workflow's Runs list and found that 9 of 10 manual test runs finished, while 1 failed at Enrich Company on a website-read error and was never retried. Checked the retry options and confirmed Clay has no automatic retry for failed runs; failed runs can be re-run singly or in bulk from the Runs page.", "resolution": "The 4 records arrived with a Salesforce Account ID but no Domain or LinkedIn URL, unlike the 10 test records, which had both. The 4 accounts were also brand new, added about 20 minutes before the trigger fired. The exact field Enrich Company reads as its identifier could not be viewed, so the cause is not fully confirmed.", "next": "Ask the customer to check whether those 4 accounts have a website or Domain populated in Salesforce, then re-run them from the Runs page once it is filled in. For the website-read failure, re-run it but expect it may fail the same way.", "verdict": "User Error", "status": "Waiting on customer", "url": "https://app.notion.com/4147e66eb014812db074da1cf4bb4b74", "overview": "The customer runs a Clay workflow that enriches company records coming from Salesforce through a segment trigger. After a manual test of 10 runs, one failed at the Enrich Company step and was not retried. They asked how to make failed runs re-run, and then questioned why four later runs were said to be missing a company identifier when the records came from Salesforce with one."}, {"id": "k2pjep7ehrxxk89tanke", "author": "Mark Larson", "fw": "versions", "framework": "Versions", "secondary": "", "failure": "A snapshot isn’t a published version", "symptom": "Customer unable to publish workflow despite valid setup", "first": "...the workflow nodes and made sure they had good node hygiene – inputs/outputs, etc..", "resolution": "...check with Devin on whether write-back to Audiences was required.\nhttps://app.devin.ai/search/is-it-required-to-write-to-aud_80058e25-ffbe-49b9-84ef-0d3ae3b1e04c\n\nIt isn't! But Devin's response to my screenshot share pointed out that it's a guide. So then I had a suspicion that guides have a more restrictive happy path", "next": "...test a workflow in one of our test accounts, and figure out how to exit Guide Mode™.", "verdict": "User Error", "status": "Resolved", "url": "https://app.notion.com/4147e66eb0148143bd95c3a5f2a7ee6b", "overview": "The customer created a workflow to update Salesforce records. They intentionally did not want to update Audience records (yet). But when trying to publish, they saw the error message \"Complete each field mapping to continue\", despite an otherwise valid setup."}, {"id": "m3e0f9aebrna28ets5hr", "author": "Maria Mergal", "fw": "observe", "framework": "Observability", "secondary": "Write-backs", "failure": "Stuck", "symptom": "Customer's workflow with about 140k runs stayed in a running state and never finished because its Google Sheets Add row step kept failing.", "first": "Checked the run counts over about 4.5 minutes and found no runs completing. Open runs had cleared the earlier enrichment steps and were queued at the Google Sheets Add row step.", "resolution": "The destination spreadsheet had hit Google's 10M-cell limit, which counts the whole grid across all tabs including empty cells. That explains why it filled at about 102k rows, and the runs waiting on it could only fail. That explanation is an inference, because the team couldn't see inside the sheet.", "next": "Cancel or pause the remaining runs, point Add row at a new single-tab spreadsheet with only the mapped columns, then save or publish and run the failed run in batches to reduce dropped connections. Also ran it from the \"Add Row\" step to avoid extra credit consumption.", "verdict": "Bug", "status": "Resolved", "url": "https://app.notion.com/4147e66eb01481198939e958faa9b6b7", "overview": "The customer runs a workflow that enriches company records and appends each result to a Google Sheet. About 241k runs were bulk-resumed, and a large share stayed open for a long time (over 20 hours) without completing. I used Claude and Devin to figure out why the workflow was still running and how to fix it."}, {"id": "oifd473ybv8hvjylumw3", "author": "Andrés Franco", "fw": "triggers", "framework": "Triggers", "secondary": "Versions", "failure": "Rung 3: What trigger rules are in play?", "symptom": "Customer edited a scheduled trigger's time window and republished, but no run started at the new time, and each publish returned a server error even though the change applied.", "first": "An automated first reply assumed the edits were only in the draft and the live schedule was still the original window. The customer corrected this by showing that V3 and V4 were published and the trigger read back pointing to V4 with the new schedule.", "resolution": "The logs showed the schedule did fire at the new time, but the run got the same deterministic id as the morning run because daily schedules are keyed to the day. Clay treated it as a duplicate and silently skipped it. This is a product bug, and engineering fixed it.", "next": "Until the fix shipped, the customer was told to avoid moving a schedule later on a day it had already run, and to run manually if another run was needed that day. After the fix was confirmed, the customer planned to verify with the next scheduled run, then the conversation auto-closed with no further reply.", "verdict": "Bug", "status": "Resolved", "url": "https://app.notion.com/4147e66eb0148107a6aec64d2524b6f2", "overview": "The customer has a workflow with a daily scheduled trigger that fired on time in its original morning window. They moved the window later in the same day and republished, expecting a run at the new time, but nothing ran and the publish calls returned a server error. They asked why the edited schedule did not fire, how to set up a single scheduled run, and whether a schedule past its end date stays inactive after editing."}, {"id": "pihgb8ibi68upcswmk3o", "author": "Ariana Mesa", "fw": "observe", "framework": "Observability", "secondary": "Triggers", "failure": "Slow", "symptom": "Customer saw contacts added to a Salesforce-driven segment take about 30 minutes to start running through the workflow, instead of starting almost immediately.", "first": "Traced two example contacts from segment entry (11:54am PDT) to workflow run start (12:24pm PDT) to confirm the actual lag. Confirmed the trigger has no schedule of its own and new members are detected only when the segment snapshot refreshes, roughly every 20 minutes.", "resolution": "The scheduler job that queues segment refreshes reached this segment a few seconds after its slot and pushed the refresh to the next 20-minute window, so new members waited about 30 minutes instead of up to 20. This was filed as a bug and a fix was merged and deployed.", "next": "Customer was told that with the fix the maximum wait is about 20 minutes, depending on when the member enters relative to the last refresh. A separate request to shorten the refresh interval is still under review.", "verdict": "Bug", "status": "Resolved", "url": "https://app.notion.com/40f7e66eb0148156b3e6d7e94bb541b6", "overview": "The customer runs two enrichment workflows triggered by audience segments that are populated every 15 minutes from Salesforce queries. They expected new segment members to start the workflow immediately, but saw records enter the segment not finish in the workflow for 30 minutes. They asked how segment membership drives workflow execution so they can set expectations with their sellers."}, {"id": "r6wxki49y2f8dhpc8ucn", "author": "Javier Dominguez", "fw": "data", "framework": "Passing data", "secondary": "Write-backs", "failure": "Is the value in the right shape?", "symptom": "Customer's Function worked from the Run button, but when Claude called it through the MCP connector it reported a missing work email even though one had been enriched.", "first": "Support confirmed the Function was set up correctly with a manual trigger, input fields and a Salesforce upsert, and that the Run button test passed. They then compared that with the MCP call, where the email was reported as missing even after enrichment.", "resolution": "The cause is a product bug: the MCP connector passes the enriched work email as a wrapped object, and input validation does not reject it. Runs started from the Run button pass a plain email, which is why manual tests worked.", "next": "Engineering has a proposed validation fix that is not yet merged, and it still needs to be checked by replaying the customer's MCP call and confirming the field mapping. Meanwhile the customer can unwrap the value in the Prepare step with the provided code.", "verdict": "Bug", "status": "Escalated", "url": "https://app.notion.com/40f7e66eb01481639fa9cb3d26908f36", "overview": "The customer is building a custom Function so sales reps can enrich people from Claude and upsert them to Salesforce through the MCP connector. A manual test with the Run button succeeded, but calls from Claude failed with a missing-email error. She asked why this happened and also asked how to show only some Clay-managed functions."}, {"id": "s4wcxwlimjnooposc3jb", "author": "Stella Adler", "fw": "writebk", "framework": "Write-backs", "secondary": "Observability", "failure": "Land", "symptom": "Customer saw Work Email test rows succeed in an Audience enrichment workflow while the Write to Audiences step failed, and later could not get the next batch to skip already-processed leads.", "first": "The Work Email step succeeded, but the Write to Audiences and Google Sheets steps failed on every row.", "resolution": "Discover that publishing the corrected workflow would cause it to run on rows that had already been processed. To avoid re-enriching those contacts, the user would need to rerun from a specific node and filter the segment", "next": "Advise the client to:\n1) Use the Run Log tab to bulk rerun from the appropriate node for leads that had already gone through email enrichment.\n2) Add a source filter to the original segment to exclude those enriched leads from the full workflow rerun.", "verdict": "User Error", "status": "Resolved", "url": "https://app.notion.com/4137e66eb014810f8c62f0a6cafb5f80", "overview": "The customer created a workflow with People segment trigger --> work email waterfall --> write to audiences --> add row to Google Sheets. They ran the workflow once for around 2000 leads but the write to audiences and google sheets nodes had incorrect mappings, so the data was not mapped to neither audiences nor sheets. They asked how to fix the failed write-back without having to re-run the whole email enrichment again"}, {"id": "x9268efifsz2ucxr8ntz", "author": "Chris Hargrave", "fw": "data", "framework": "Passing data", "secondary": "", "failure": "Did the record reach the step?", "symptom": "Customer wanted a workflow to fan out a large HTTP array response into separate table rows, but Workflows had no native way to do it and the table hit a cell size limit.", "first": "The bot repeatedly pointed the customer to the table-based Send table data action and a workflow-to-table pattern, which did not fit the goal. After the customer escalated, support asked what they were trying to achieve.", "resolution": "Engineering delivered a new repeat-for-each-entry-in-a-list capability for workflows and enabled the feature flag for the customer's workspace. This addresses the list-shaped data the next step could not use.", "next": "Support sent the customer a demo video and noted it is an early version, with a request for feedback. The ticket was later closed after follow-ups with no further customer reply.", "verdict": "User Error", "status": "Escalated", "url": "https://app.notion.com/4147e66eb01481d9b899dd09530a1c33", "overview": "The customer built a workflow, started by a manual trigger, that makes an HTTP request returning a large array. Putting that data in a table caused a cell data size limit error. They asked how to turn on Map/Reduce or fan out in workflows and send the array items to another table as rows, similar to Send table data."}, {"id": "zb1jaxnw405dbvtxtzyc", "author": "Connie Yang", "fw": "data", "framework": "Passing data", "secondary": "Triggers", "failure": "Did the record reach the step?", "symptom": "Customer's Invoke Workflow node inside a workflow failed with an error every time, whether run from the trigger or on its own, so it never passed any data to the child workflow.", "first": "Support first took the error at face value and suggested running the whole workflow from the trigger rather than testing the single step. The customer reported the same error from the trigger as well.", "resolution": "The node was built on the table version of \"Run workflow\" instead of the workflow version, and that action cannot run inside a workflow however the run starts. The builder shouldn't have allowed it to be saved as a workflow node, and the failure is labelled as an unknown system error, so most runs show a generic message instead of the real one. I double checked this using Devin, which confirmed the same root cause (https://app.devin.ai/sessions/4c6c602bc4764ab4b7a3ecb0729112c3?tab=diff)", "next": "The issue was escalated to engineering and linked to a bug ticket. I updated the customer that engineering was taking a look.", "verdict": "Bug", "status": "Escalated", "url": "https://app.notion.com/4137e66eb0148100ac7ce62b7071cb59", "overview": "The customer built a parent workflow meant to call a second workflow once per contact using an Invoke Workflow (Run workflow) node. The node failed with the error \"Invoke Workflow can only be run from an action cell or tool run\" and would not take in any data. They asked why the node wasn't working, and kept getting the same error after being told to run the whole workflow from the trigger."}, {"id": "zcokddxc0jdq889lbdks", "author": "Keane Davis", "fw": "data", "framework": "Passing data", "secondary": "Write-backs", "failure": "Did the record reach the step?", "symptom": "Customer built a workflow to de-anonymize PostHog visitor IPs, but runs through the provider path failed and building a waterfall was confusing.", "first": "Support compared the workflow's recent runs and found that rows going down the IP lookup path failed while rows on the other branch finished. The team also checked the separate company lookup function's configuration, which had no IP input and no output selected, and had not processed any rows.", "resolution": "The conclusion was that the lookup steps were chained without waterfall logic, so a failure in the first provider stopped the others from being tried. The support agent moved People Data Labs to the end so it no longer blocks the other providers, and noted that conditions were still needed to make a true waterfall.", "next": "The customer needs to add conditions so each provider runs only if the previous one found nothing. Alternatively, they can fix the function by adding an IP input and selecting its output, then call it as one step. The agent sent a walkthrough video and refunded the credits used in testing, and the customer did not reply again before the conversation auto-closed.", "verdict": "User Error", "status": "Resolved", "url": "https://app.notion.com/4147e66eb014816dac6ec67729f1f93e", "overview": "The customer is building a workflow that takes visitor IP addresses from PostHog (a live feed plus an uploaded CSV of past visits), identifies the companies behind them, and sends the results back to PostHog for a dashboard. The workflow was generated by Clay's AI assistant, but runs that went through the IP lookup path failed while other runs finished. They said the setup felt too complicated and asked for help getting it working."}];
 
-  // Facilitator-only: cards whose answer depends on an open bug (content unchanged; marked with a dagger).
-  var OPEN_BUG={"WF-233":1,"WF-199":1,"WF-177":1,"WF-224":1};
+
+  var FW_KEY={"Triggers":"triggers","Versions":"versions","Passing data":"data","Write-backs":"writebk","Observability":"observe"};
+  var DECKS={triggers:[],versions:[],data:[],writebk:[],observe:[]};
+  TICKETS.forEach(function(t){ if(DECKS[t.fw]) DECKS[t.fw].push(t); });
+  var OPEN_BUG={};
+  function leftover(fw){ return TICKETS.filter(function(t){ return (state.used||[]).indexOf(t.id)<0 && (!fw||t.fw===fw); }); }
+  function takeTicket(fw, wild){
+    var restocked=false;
+    if(!leftover().length){ state.used=[]; restocked=true; }
+    var list=fw?leftover(fw):leftover(), fallback=false;
+    if(!list.length){ list=leftover(); fallback=true; }
+    var t=list[Math.floor(Math.random()*list.length)];
+    state.used=state.used||[]; state.used.push(t.id);
+    return {src:t, fallback:fallback, restocked:restocked, wild:!!wild};
+  }
+  function wildCard(){ var pick=takeTicket(null,true); return {wild:true, wildKey:pick.src.fw, src:pick.src, fallback:pick.fallback, restocked:pick.restocked}; }
+
 
   // ---------- Broken-workflow slots (facilitator-editable, localStorage) ----------
   var WF_KEY="r2r-workflows";
@@ -1679,7 +1683,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 
   // ---------- State ----------
   var state={pos:[0,0], turn:0, roll:0, face:0, card:null, revealed:false, over:false,
-             names:["Port Crew","Starboard Crew"], armed:[]};
+             names:["Port Crew","Starboard Crew"], armed:[], used:[], stealOffered:false};
   // armed[i] = the stop effect waiting for crew i's next turn ("fog" | "kraken" | "mutiny"), set when its ship lands on that stop
 
   var $=function(id){return document.getElementById(id);};
@@ -1742,8 +1746,10 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 
   // ---------- Fit-to-window sizing (measured from the game's root, not media queries) ----------
   var FITMODE=false, LASTFIT="";
-  function boardH(W){ var nr=W<560, C=W<560?2:(W<820?3:(W<1060?4:5)), rows=Math.ceil(NODES.length/C);
-    return (nr?96:112)+(rows-1)*(nr?176:182)+(nr?12:22)+(nr?118:132); }
+  function gridFor(W){ var nr=W<560, C=W<560?3:(W<800?4:(W<980?5:6));
+    return {nr:nr,C:C,padX:nr?48:68,padTop:nr?68:80,gapY:nr?118:126,A:nr?8:12,B:nr?10:14,TILE:nr?46:52,CH:nr?68:80,bottom:nr?78:96}; }
+  function boardH(W){ var g=gridFor(W), rows=Math.ceil(NODES.length/g.C);
+    return g.padTop+(rows-1)*g.gapY+g.A+g.bottom; }
   function fitBoard(bw,bh){ var best={W:600,s:0,a:-1};
     if(!(bw>0&&bh>0)) return {W:bw>0?bw:600,s:1};
     for(var W=600;W<=1600;W+=4){ var H=boardH(W), sc=Math.min(bw/W,bh/H,1.6), ar=sc*sc*W*H; if(ar>best.a+0.5) best={W:W,s:sc,a:ar}; }
@@ -1762,13 +1768,11 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     if(FITMODE) fb=fitBoard(bw,bx.clientHeight);
     else fb=bw<560?{W:bw||600,s:1}:fitBoard(bw,Math.max(300,Math.round(innerHeight*0.62)));
     var W=fb.W||600;
-    var narrow=W<560;
-    var COLS = W<560?2 : (W<820?3 : (W<1060?4:5));
-    var padX=narrow?60:100, padTop=narrow?96:112, gapY=narrow?176:182, A=narrow?12:22, B=narrow?16:26;
-    TILE=narrow?62:70; var CH=narrow?92:104;
+    var g=gridFor(W), narrow=g.nr, COLS=g.C, padX=g.padX, padTop=g.padTop, gapY=g.gapY, A=g.A, B=g.B;
+    TILE=g.TILE; var CH=g.CH;
     var innerW=W-padX*2, stepX=COLS>1?innerW/(COLS-1):0;
     var rows=Math.ceil(NODES.length/COLS);
-    var H=padTop+(rows-1)*gapY+A+(narrow?118:132);
+    var H=padTop+(rows-1)*gapY+A+g.bottom;
     board.style.width=W+"px"; board.style.height=H+"px"; board.style.transform="scale("+fb.s.toFixed(4)+")";
     board.style.setProperty("--bs",(fb.s||1).toFixed(4)); // keeps the 3px ink outline and label sizes true on screen
     SHIP=Math.ceil(Math.max(46,Math.min(58,65*(innerHeight/1080)/(fb.s||1)))); // ships >= 64px long at 1080p
@@ -2083,9 +2087,12 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     state.roll=n;
     var card, fxNow=state.armed[state.turn]||null; state.armed[state.turn]=null;
     if(n===6){ card=wildCard(); state.face=5; }
-    else { var f=FACES[n-1]; card={face:n-1, src:DECKS[f.key][Math.floor(Math.random()*DECKS[f.key].length)]}; state.face=n-1; }
+    else { var f=FACES[n-1], pick=takeTicket(f.key,false);
+      card={face:n-1, src:pick.src, fallback:pick.fallback, restocked:pick.restocked};
+      if(pick.fallback) card.wildKey=pick.src.fw;
+      state.face=n-1; }
     card.fx=fxNow; // the stop effect that applies to this turn (null for none)
-    state.card=card; state.revealed=false;
+    state.card=card; state.revealed=false; state.stealOffered=false;
     showCase(card,n);
     if(card.wild) krakenFx();
     if(fxNow) announce(fxNow, fxNow==="kraken"?"The Kraken rises from the deep!":(fxNow==="fog"?"Fog rolls in!":"Mutiny brewing!"), FX[fxNow].now(state.names[state.turn],state.names[(state.turn+1)%crewCount()]));
@@ -2100,17 +2107,21 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   function showCase(card,n){
     var c=card.src; var csc=$("caseScroll"); if(csc) csc.scrollTop=0;
     setFace(card.wild?"wild":FACES[card.face].key);
+    var left=leftover().length;
     if(card.wild){
       $("faceName").textContent="Kraken: Bug or Config?";
-      $("faceTag").textContent="Snap verdict · framework hidden until the reveal";
+      $("faceTag").textContent="Snap verdict · framework hidden until the reveal · "+left+" left in the chest";
     } else {
       $("faceName").textContent=FACES[card.face].name;
-      $("faceTag").textContent=FACES[card.face].tag;
+      $("faceTag").textContent=card.fallback
+        ?("No "+FACES[card.face].name+" tickets left — drawn from the remaining library · "+left+" left")
+        :(FACES[card.face].tag+" · "+left+" left in the chest");
     }
-    $("ticketId").textContent="#"+c.id;
+    if(card.restocked) announce("catchup","The ticket chest is restocked","Every library ticket has been drawn once, so the chest is shuffled again. Still no repeats until it empties.");
+    $("ticketId").textContent="#"+(c.id||"").slice(0,8); var au=$("ticketAuthor"); if(au) au.textContent=c.author||"";
     $("obMark").hidden=!OPEN_BUG[c.id];
     $("handsOn").hidden=true;
-    $("ticketText").textContent=c.t;
+    $("ticketText").textContent=c.symptom||c.t||"";
     $("revealBox").hidden=true; $("revealBtn").hidden=false; $("caseBody").hidden=false; $("caseEmpty").hidden=true;
     $("nailN").textContent=n;
     configureOutcomes();
@@ -2125,9 +2136,14 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     $("nailN").textContent=state.roll+(cu?" +1 catch-up":"");
     var nb=$("nudgeBtn"); nb.classList.toggle("miss",f==="fog");
     $("nudgeTxt").textContent=f==="fog"?"Missed it (no hints in the fog) · stay put":"Needed a nudge · sail 1";
-    var sb=$("stealBtn"); sb.hidden=(f!=="mutiny");
-    $("stealIc").innerHTML=ART.mutiny.replace('class="art"','');
-    $("stealTxt").textContent="Missed it · "+state.names[nx]+" steals it (+1 to them)";
+    var mb=$("missBtn"); if(mb) mb.hidden=false;
+    var so=$("stealOffer"); if(so) so.hidden=true;
+    var sb=$("stealBtn"); if(sb){ sb.hidden=false;
+      $("stealIc").innerHTML=ART.mutiny.replace('class="art"','');
+      $("stealTxt").textContent="Stolen · "+state.names[nx]+" sails "+state.roll;
+    }
+    var ns=$("noStealBtn"); if(ns) ns.textContent="No steal — "+state.names[nx]+" rolls next";
+    if(state.stealOffered){ if(so) so.hidden=false; $("scoreActions").hidden=true; } else { $("scoreActions").hidden=false; }
     var notes=[];
     if(f) notes.push(FX[f].stop+": "+FX[f].now(state.names[t],state.names[nx]));
     if(cu) notes.push("Catch-up wind: "+state.names[t]+" is behind every crew, so solving it unaided sails +1.");
@@ -2157,50 +2173,68 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   function reveal(){
     if(!state.card) return;
     var c=state.card.src;
-    $("rMove").textContent=state.card.wild ? "Make the call first, then check: "+c.move : c.move;
-    $("rDiag").textContent=c.d;
-    var vb=$("rVerdict"); vb.className="verdict "+V[c.v].cls; vb.textContent=V[c.v].label;
-    $("rReply").textContent=c.r;
-    if(state.card.wild){ $("faceTag").textContent="Snap verdict · framework revealed: "+FACES[["triggers","versions","data","writebk","observe"].indexOf(state.card.wildKey)].name; }
+    var first=c.first||c.move||"";
+    $("rMove").textContent=first;
+    var res=c.resolution||c.d||"";
+    if(c.next) res=res+(res?"\n\n":"")+"What they did next: "+c.next;
+    $("rDiag").textContent=res;
+    var vkey=(c.verdict==="Bug"||c.v==="bug")?"bug":(c.verdict==="User Error"||c.v==="config")?"config":(c.verdict==="Unsure"||c.v==="admin")?"admin":(V[c.v]?c.v:"admin");
+    var vlab={"bug":"Bug","config":"User Error","admin":"Unsure"}[vkey]||(c.verdict||"");
+    var vb=$("rVerdict"); vb.className="verdict "+V[vkey].cls; vb.textContent=vlab+(c.framework?(" · "+c.framework):"");
+    var rr=$("rReply"); if(rr) rr.textContent=c.framework?("Framework used: "+c.framework+(c.failure?(" — "+c.failure)+"":"")):"";
+    if(state.card.wild||state.card.fallback){ $("faceTag").textContent="Framework revealed: "+(c.framework||FACES[["triggers","versions","data","writebk","observe"].indexOf(state.card.wildKey||c.fw)].name); }
     renderHandsOn();
-    var fx0=state.card.fx, cu0=catchUp(state.turn);
+    var fx0=state.card.fx, cu0=catchUp(state.turn), nx0=state.names[(state.turn+1)%crewCount()];
     $("scoreHint").textContent="Crew solved it solo? Sail the number rolled ("+state.roll+(cu0?" +1 catch-up":"")+"). "
-      +(fx0==="fog"?"No hints in the fog: a miss means stay put.":"Needed a hint? Sail 1.")
-      +(fx0==="mutiny"?" Missed it? "+state.names[(state.turn+1)%crewCount()]+" may steal it for +1.":"");
+      +(fx0==="fog"?"No hints in the fog: a miss stays put, then "+nx0+" may steal the advance. ":"Needed a hint? Sail 1. Missed it? "+nx0+" may steal and sail "+state.roll+". ")
+      +"There is no timer — talk it out.";
     $("revealBtn").hidden=true; $("revealBox").hidden=false; state.revealed=true; persist(); snd("reveal");
   }
   function cardKey(){ return state.card ? (state.card.wild ? state.card.wildKey : FACES[state.card.face].key) : null; }
   function renderHandsOn(){
-    var box=$("handsOn"), k=cardKey(); if(!k||!WF[k]){ box.hidden=true; return; }
-    var f=FACES[["triggers","versions","data","writebk","observe"].indexOf(k)], slot=WF[k];
-    box.innerHTML='<div class="lbl">Hands-on · broken '+f.name+' workflow</div><div class="wf-link"></div><div class="wf-fixed"><b>Fixed when:</b> <span></span></div>';
-    var L=box.querySelector(".wf-link"), link=(slot.link||"").trim();
-    if(/^https?:\/\//i.test(link)){ var a=document.createElement("a"); a.href=link; a.target="_blank"; a.rel="noopener"; a.textContent="Open the broken "+f.name+" workflow ↗"; a.title=link; L.appendChild(a); }
-    else { L.textContent=link||"[No workflow link set]"; if(!link||link.charAt(0)==="[") L.classList.add("placeholder"); }
-    var F=box.querySelector(".wf-fixed span"), fx=(slot.fixed||"").trim();
-    F.textContent=fx||"[No 'fixed when' check set]"; if(!fx||fx.charAt(0)==="[") F.classList.add("placeholder");
+    var box=$("handsOn"), c=state.card&&state.card.src; if(!box||!c){ if(box) box.hidden=true; return; }
+    box.innerHTML='<div class="lbl">Find the resolution in the ticket library</div><div class="wf-link"></div>'
+      +'<div class="wf-fixed">Do not open a live Clay workspace. Live workspaces can leave broken workflows behind (for example, Javier\'s ticket: works from the Run button, fails via Claude MCP — missing work email).</div>';
+    var L=box.querySelector(".wf-link");
+    var a=document.createElement("a"); a.href=c.url||LIB_URL; a.target="_blank"; a.rel="noopener";
+    a.textContent="Open this ticket in the library ↗"; L.appendChild(a);
+    L.appendChild(document.createTextNode(" · "));
+    var b=document.createElement("a"); b.href=LIB_URL; b.target="_blank"; b.rel="noopener";
+    b.textContent="All submissions ↗"; L.appendChild(b);
     box.hidden=false;
+  }
+  function offerSteal(){
+    if(!state.card||state.over) return;
+    state.stealOffered=true; persist();
+    snd("miss");
+    $("scoreActions").hidden=true; $("stealOffer").hidden=false;
+    try{ $("stealOffer").scrollIntoView({block:"nearest",inline:"nearest"}); }catch(e){}
+    var nx=state.names[(state.turn+1)%crewCount()];
+    $("stealTxt").textContent="Stolen · "+nx+" sails "+state.roll;
+    $("noStealBtn").textContent="No steal — "+nx+" rolls next";
+    if(state.card.fx==="fog") announce("fog","Lost in the fog","No hints in Foggy Narrows, so "+state.names[state.turn]+" stays put. "+nx+" may steal the advance.");
   }
   function resolve(kind){
     if(!state.card||state.over) return;
     if(kind===true) kind="nail"; else if(kind===false) kind="nudge";
+    if(kind==="miss"){ offerSteal(); return; }
     var t=state.turn, n=crewCount(), nx=(t+1)%n, c=state.card, cu=(kind==="nail")&&catchUp(t), step, news=[];
     if(kind==="nail") step=state.roll+(cu?1:0);
-    else if(kind==="nudge") step=(c.fx==="fog")?0:1;   // Foggy Narrows: no hint, so a nudge counts as a miss
-    else step=0;                                        // Mutiny Bay steal: the crew that missed stays put
+    else if(kind==="nudge"){ if(c.fx==="fog"){ offerSteal(); return; } step=1; }
+    else step=0; // miss with no steal, or after a steal the original stays put
     state.pos[t]=Math.min(TRACK, state.pos[t]+step);
-    snd(kind==="nail"?"nail":(step===0?"miss":"nudge"));
+    snd(kind==="nail"?"nail":(kind==="steal"?"miss":(step===0?"miss":"nudge")));
     var movers=step>0?[t]:[];
-    if(kind==="steal"){ state.pos[nx]=Math.min(TRACK,state.pos[nx]+1); movers.push(nx); }
+    if(kind==="steal"){ state.pos[nx]=Math.min(TRACK,state.pos[nx]+state.roll); movers.push(nx); snd("fx-mutiny"); }
     placeTokens();
     if(state.pos[t]>=TRACK){ win(t); return; }
     if(kind==="steal" && state.pos[nx]>=TRACK){ state.turn=nx; win(nx); return; }
-    movers.forEach(function(m){ var f=NODES[state.pos[m]].fx; if(f){ state.armed[m]=f; news.push({k:f,t:"Ahoy, "+FX[f].stop+"!",s:FX[f].land(state.names[m])}); } });
-    if(kind==="steal") news.unshift({k:"mutiny",t:"Mutiny! Answer stolen!",s:state.names[nx]+" stole the answer and sails +1. "+state.names[t]+" stays put."});
+    movers.forEach(function(m){ var f=NODES[state.pos[m]]&&NODES[state.pos[m]].fx; if(f){ state.armed[m]=f; news.push({k:f,t:"Ahoy, "+FX[f].stop+"!",s:FX[f].land(state.names[m])}); } });
+    if(kind==="steal") news.unshift({k:"mutiny",t:"Answer stolen!",s:state.names[nx]+" stole the question and sails "+state.roll+". "+state.names[t]+" stays put. The wheel passes to the crew after "+state.names[nx]+"."});
     if(cu) news.unshift({k:"catchup",t:"Catch-up wind!",s:state.names[t]+" was behind every crew and sails "+state.roll+" +1."});
-    if(kind==="nudge" && c.fx==="fog") news.unshift({k:"fog",t:"Lost in the fog",s:"No hints in Foggy Narrows, so "+state.names[t]+" stays put."});
     if(news.length){ var top=news[0]; announce(top.k, top.t, news.map(function(x){return x.s;}).join(" ")); }
-    state.turn=nx;
+    state.stealOffered=false;
+    state.turn=(kind==="steal")?(nx+1)%n:nx;
     state.card=null; state.revealed=false; $("dieIc").hidden=true;
     $("caseBody").hidden=true; $("caseEmpty").hidden=false;
     $("rollBtn").disabled=false; $("rollLabel").textContent="Roll the bones to draw a distress call.";
@@ -2227,7 +2261,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   function reset(count){
     var n=Math.max(2,Math.min(MAX_CREWS,parseInt(count,10)||crewCount()||2)), pos=[], names=[];
     for(var i=0;i<n;i++){ pos.push(0); var el=$("name"+i); names.push((el&&el.value)||CREW_DEFAULTS[i]); }
-    state={pos:pos,turn:0,roll:0,face:0,card:null,revealed:false,over:false,names:names,armed:[]};
+    state={pos:pos,turn:0,roll:0,face:0,card:null,revealed:false,over:false,names:names,armed:[],used:[],stealOffered:false};
     renderCrews();
     $("winOverlay").hidden=true; stopConfetti(); $("dieIc").hidden=true;
     $("caseBody").hidden=true; $("caseEmpty").hidden=false;
@@ -2280,6 +2314,8 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
       if(s&&Array.isArray(s.pos)&&s.pos.length>=2&&s.pos.length<=MAX_CREWS){ state=s;
         if(!Array.isArray(state.names)) state.names=[];
         if(!Array.isArray(state.armed)) state.armed=[];
+        if(!Array.isArray(state.used)) state.used=[];
+        if(typeof state.stealOffered!=="boolean") state.stealOffered=false;
         renderCrews();
         placeTokens(); renderTurn();
         if(state.card){ showCase(state.card,state.roll); if(state.revealed) reveal(); } else pendingNote();
@@ -2296,6 +2332,8 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   $("nailBtn").addEventListener("click",function(){resolve("nail");});
   $("nudgeBtn").addEventListener("click",function(){resolve("nudge");});
   $("stealBtn").addEventListener("click",function(){resolve("steal");});
+  $("missBtn").addEventListener("click",function(){resolve("miss");});
+  $("noStealBtn").addEventListener("click",function(){resolve("pass");});
   $("resetBtn").addEventListener("click",function(){reset();});
   $("winReset").addEventListener("click",function(){reset();});
   $("crewCount").addEventListener("change",function(){ reset(this.value); });
