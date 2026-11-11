@@ -11,7 +11,7 @@ Two to six pirate crews race across a treasure map of **30 checkpoints** to a ch
 
 The **crew at the wheel** has library access for the whole turn. They use the library to look the ticket up and find the framework — they do not guess. Each **waiting crew** may lock in a framework guess **from memory, with no library**, for **+1 space** if it is correct. The host can pick or change those guesses at any time until **Lock guesses** or **Reveal**. Opening the library does **not** lock them, so the crew at the wheel can use it early. **Hint: show framework** or **Reveal the diagnosis** also locks any unlocked guesses. The hint does not change how you score the crew at the wheel.
 
-The crew at the wheel then answers out loud: they explain the workflow in natural language and identify the framework it represents. The facilitator reveals a brief summary (workflow context, root cause, and solution, plus the framework) along with the diagnosis (what was checked first, the resolution, and the verdict). Correct waiting-crew guesses sail +1 on reveal. Solving it alone moves the active ship further than solving it with a nudge. If they miss, the **next crew in turn order may steal** the question and take the advance. The first crew to reach the chest wins.
+The crew at the wheel then answers out loud: they explain the workflow in natural language and identify the framework it represents. The facilitator reveals a brief summary (workflow context, root cause, and solution, plus the framework) along with the diagnosis (what was checked first, the resolution, and the verdict). Correct waiting-crew guesses sail +1 on reveal. Solving it alone sails the number rolled. If they miss, the **next crew in turn order may steal** the question and take the advance. The first crew to reach the chest wins.
 
 **Do not open a live Clay workspace.** Live workspaces can leave broken workflows behind (for example, Javier's ticket: works from the Run button, fails via Claude MCP — missing work email). Questions point at the ticket library, not at live workspaces.
 
@@ -49,7 +49,7 @@ An effect is set when a ship **lands** on the stop, and it applies to **that cre
 
 | Stop | Icon | Effect on the crew's next turn | What the facilitator does |
 |---|---|---|---|
-| **Foggy Narrows (7)** | Fog bank | **No hints this turn.** The *Needed a nudge* button becomes a miss: the crew stays put, then the next crew may steal. Nailed it still sails the number rolled. | Don't give a hint. If they can't solve it alone, click *Missed it*. |
+| **Foggy Narrows (7)** | Fog bank | **No hints this turn** is about scoring, not the on-screen hint button. Nailed it still sails the number rolled. If they can't solve it alone, click *Missed it*: the crew stays put, then the next crew may steal. | If they can't solve it alone, click *Missed it*. Using **Hint: show framework** does not change that. |
 | **Kraken Deep (14)** | Tentacle | **The next roll is a Kraken card.** The die is forced to 6 and the framework is hidden until the reveal. | Score it like any Kraken roll (Nailed it = sail 6). |
 | **Mutiny Bay (21)** | Black flag | A reminder stop: **if the crew misses, the next crew may steal** (this is also the core rule on every other stop). | Same steal flow as everywhere else. |
 
@@ -62,11 +62,11 @@ If the crew at the wheel **misses** the question, **the next crew in turn order*
 3. **Stolen:** click *Stolen · [crew] sails N*. That crew sails the number rolled. The wheel then passes to the crew **after** the stealer, so the stealer doesn't immediately roll again.
 4. **No steal:** click *No steal — [crew] rolls next*. Nobody else moves, and that next crew takes a normal turn (they roll a new unique ticket).
 
-Steal is only offered to the next crew in turn order — one chance, not a free-for-all. A successful steal does **not** get catch-up wind. There is no steal on *Nailed it* or on *Needed a nudge* (except in Foggy Narrows, where a nudge is a miss and does open steal).
+Steal is only offered to the next crew in turn order — one chance, not a free-for-all. A successful steal does **not** get catch-up wind. There is no steal on *Nailed it*.
 
 ### Catch-up wind (3 or more crews)
 
-With **3 or more crews**, a crew that's **strictly behind every other crew** (no ties) gets **+1 space when it solves a card unaided**. It doesn't apply to nudges or steals, and it never applies in a 2-crew game.
+With **3 or more crews**, a crew that's **strictly behind every other crew** (no ties) gets **+1 space when it solves a card unaided**. It doesn't apply to steals, and it never applies in a 2-crew game.
 
 ## 4. Dice and the ticket chest
 
@@ -105,17 +105,16 @@ The **Workflows** header button still opens an optional notes panel (saved in th
 ## 6. Turn structure
 
 1. **Roll.** The crew at the wheel clicks **Roll the bones**. The game draws a unique library ticket that **every crew works** (a silent race). The framework name is hidden (it does not appear on the banner, the roll status line, the chips, or in "What was checked first" until a hint or the reveal).
-2. **1-min prep (host-started).** The host may press **Start 1-min prep**. The 60-second countdown is visible on the card; it does **not** start automatically. When the minute is up, the clock shows **Time's up — prep is over**. The host can **Reset** the timer and start it again if needed. A timer-sound toggle is off by default; no alarm is required.
+2. **1-min prep (host-started).** The host may press **Start 1-min prep**. The 60-second countdown is visible on the card; it does **not** start automatically. When the minute is up, the clock shows **Time's up — prep is over**. The host can **Reset** the timer and start it again if needed. During the last 10 seconds the clock turns red and pulses, a short tick plays each second (10→1), and a distinct end sound plays at 0. These sounds follow the global **Sound effects** mute. There is no separate timer-sound toggle. If the room prefers reduced motion, the clock stays a steady red instead of pulsing. **Reset** returns the clock to its normal color.
 3. **Waiting-crew framework guesses.** Before Reveal, the host selects a framework guess for each crew that is not at the wheel. The on-screen reminder is: **Waiting crews: no library! Guess the framework from memory.** A correct guess is worth **+1 space**, applied when the diagnosis is revealed. The crew at the wheel does not guess — they have the library. The host can pick or change a waiting-crew guess at any time until **Lock guesses** or **Reveal**. Opening the library does **not** lock those picks. **Hint: show framework** or **Reveal the diagnosis** also locks any unlocked guesses. An empty guess scores nothing.
-4. **Explain and identify (crew at the wheel).** The facilitator reads the symptom. The crew at the wheel uses the library to look the ticket up and find the framework (they do not guess), then answers out loud: they explain the workflow in natural language and name the framework. Do not open a live workspace. If they need a hint, click **Hint: show framework**; this reveals the framework name. Using the hint does **not** change the Nailed it / Needed a nudge / Missed it score. Foggy Narrows "no hints" still refers only to scoring: a nudge is a miss.
+4. **Explain and identify (crew at the wheel).** The facilitator reads the symptom. The crew at the wheel uses the library to look the ticket up and find the framework (they do not guess), then answers out loud: they explain the workflow in natural language and name the framework. Do not open a live workspace. If they need a hint, click **Hint: show framework**; this reveals the framework name. Using the hint does **not** change the Nailed it / Missed it score. Foggy Narrows "no hints" still refers only to scoring: if they can't solve it alone, click **Missed it**.
 5. **Reveal.** Click **Reveal the diagnosis**. Correct waiting-crew guesses sail +1 immediately. You'll also see a brief summary of the workflow context, root cause, and solution (taken from that ticket's existing library fields, plus the framework), then what was checked first, the full resolution (and what they did next, from the library), the verdict, and the library link.
 6. **Score the crew at the wheel.**
-   - **Nailed it.** Solved alone: sail **the number rolled** (1 to 6), plus catch-up if it applies.
-   - **Needed a nudge.** Needed a hint: sail **1** (in Foggy Narrows this is a miss instead).
+   - **Nailed it.** Solved it: sail **the number rolled** (1 to 6), plus catch-up if it applies.
    - **Missed it.** The original crew stays put, and the next crew may steal (see section 3).
 7. **Pass the wheel.** The next crew in order takes the wheel, except after a **successful steal**, when the wheel skips the stealer and goes to the crew after them.
 
-You can't lose ground. A ship stays put only on a miss (including a fog miss) or when its answer is stolen.
+You can't lose ground. A ship stays put only on a miss or when its answer is stolen.
 
 ## 7. Scoring and winning
 
@@ -128,14 +127,14 @@ You can't lose ground. A ship stays put only on a miss (including a fog miss) or
 - **Date:** Wednesday, November 11, 2026, after the support meeting. It runs **twice**:
   - **Morning run:** London plus half of New York, at **7:00 AM PT (SF) / 10:00 AM ET (NY) / 3:00 PM GMT (London)**.
   - **Afternoon run:** San Francisco plus the other half of New York.
-- **Prep timer.** There is a host-started **1-minute prep** countdown on each ticket. It never auto-starts. The host presses **Start 1-min prep**, can **Reset** it, and the clock clearly shows when time is up. Timer sound is optional and off by default. After prep, the crew at the wheel still talks the answer out — there is no auto-score when the minute ends. First to the treasure wins.
+- **Prep timer.** There is a host-started **1-minute prep** countdown on each ticket. It never auto-starts. The host presses **Start 1-min prep**, can **Reset** it, and the clock clearly shows when time is up. In the last 10 seconds the clock turns red and pulses, ticks play each second, and a distinct end sound plays at 0 (all of it follows the global Sound effects mute). After prep, the crew at the wheel still talks the answer out — there is no auto-score when the minute ends. First to the treasure wins.
 - **Room:** the team wants to book *Oxidation* in the new NY office.
 
 ## 9. Facilitator notes
 
 - Narrate the game. Keep each crew on *explaining the workflow, identifying the framework, what was checked first, the resolution, and the verdict*.
 - Have the crew at the wheel say their answer **before** you click Reveal. They may open the library at any time during the turn; that does not lock waiting-crew guesses. Press **Lock guesses** when those picks should freeze, or rely on Hint or Reveal to lock them. Offer the framework hint only if the crew at the wheel asks; it does not change how you score their turn.
-- You decide between *Nailed it*, *Needed a nudge*, and *Missed it*. A sensible bar for *Nailed it*: they explained the workflow and named the right framework **and** the right verdict. Using the on-screen framework hint does not, by itself, turn a nail into a nudge.
+- You decide between *Nailed it* and *Missed it*. A sensible bar for *Nailed it*: they explained the workflow and named the right framework **and** the right verdict. Using the on-screen framework hint does not, by itself, turn a nail into a miss.
 - On Kraken rolls, let the other crews call out "bug!" or "user error!" to keep everyone engaged.
 - **Music** and **Sound effects** (keys **M** and **S**) sit in the header on a wide screen, or in a fixed pill at the bottom-left on a narrower one. Music starts off; sound effects start on. The choice is remembered in this browser.
 - The **Theme** button switches between the standard deep-sea background and a darker "night sea" one.
@@ -157,11 +156,11 @@ You can't lose ground. A ship stays put only on a miss (including a fog miss) or
 >
 > **Each turn:** Roll (every crew works this ticket) → host may **Start 1-min prep** → waiting crews lock a framework guess from memory (**no library**, +1 if correct) → the crew at the wheel uses the **library** to find the framework (they do not guess), then explains it out loud (optional: Hint: show framework) → Reveal (correct guesses sail +1; summary of context, root cause, solution, plus framework) → score the crew at the wheel
 >
-> **Move:** Nailed it alone = sail **the number rolled** · Needed a nudge = sail **1** · Missed it = stay put, and the **next crew in turn order** may steal and sail that same number
+> **Move:** Nailed it = sail **the number rolled** · Missed it = stay put, and the **next crew in turn order** may steal and sail that same number
 >
 > **Chest:** 18 unique library tickets; no repeats until the chest is empty, then it is restocked
 >
-> **Stop effects (next turn after landing):** Foggy Narrows = no hints, a miss stays put then steal is offered · Kraken Deep = next roll is a Kraken · Mutiny Bay = reminder that a miss can be stolen · **Catch-up** (3+ crews): last place alone gets +1 for solving unaided
+> **Stop effects (next turn after landing):** Foggy Narrows = no hints (if they can't solve it alone, Missed it / steal) · Kraken Deep = next roll is a Kraken · Mutiny Bay = reminder that a miss can be stolen · **Catch-up** (3+ crews): last place alone gets +1 for solving unaided
 >
 > **Then** the wheel passes (after a successful steal, it skips the stealer). **First to the chest wins.** No exact roll needed. **Prep timer:** host-started, 1 minute, resettable; it does not auto-start.
 >
@@ -187,6 +186,7 @@ You can't lose ground. A ship stays put only on a miss (including a fog miss) or
 ## What changed in v8.1
 
 - **Silent race.** Every crew works the same rolled ticket. The crew at the wheel still answers out loud.
-- **1-min prep.** A host-pressed **Start 1-min prep** button runs a visible 60-second countdown. It does not auto-start. Time's up is shown clearly on the clock. The host can reset it. Timer sound is optional and off by default.
+- **1-min prep.** A host-pressed **Start 1-min prep** button runs a visible 60-second countdown. It does not auto-start. Time's up is shown clearly on the clock. The host can reset it. During the last 10 seconds the clock turns red and pulses, a short tick plays each second (10→1), and a distinct end sound plays at 0. These follow the global Sound effects mute. There is no separate timer-sound toggle.
 - **Waiting-crew framework guess.** Before Reveal, each crew that is not at the wheel can lock in a framework guess from memory for **+1 space** if correct. The on-screen rule is: "Waiting crews: no library! Guess the framework from memory." The host selects each guess. The **crew at the wheel** has the library link for the whole turn and uses it to find the framework — they do not guess. Opening the library does not lock waiting-crew guesses. **Lock guesses**, **Hint**, or **Reveal** does. The hint does not change the active crew's score.
+- **Scoring is Nailed it or Missed it.** The **Needed a nudge** button is gone. Missed it still offers a steal to the next crew.
 - A **Rules** button in the header opens a projector-friendly rules modal (close with X, Esc, or a click outside).

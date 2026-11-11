@@ -1061,9 +1061,10 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 .r2r .prep-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .r2r .prep-actions .btn,.r2r .prep-actions .btn-paper{width:auto;min-width:0;padding:8px 14px;font-size:clamp(14px,calc(1.8 * var(--vh,10.8px)),18px)}
 .r2r .prep-actions .btn:disabled{opacity:.5;cursor:default;filter:none;transform:none}
-.r2r .prep-sound{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.9rem;color:var(--c-wood);cursor:pointer;user-select:none}
-.r2r .prep-sound input{width:16px;height:16px;accent-color:var(--c-wood)}
-.r2r .race-note{margin:0 0 10px;padding:8px 12px;background:var(--c-parchment);border:2px solid var(--c-ink);border-radius:10px;font-weight:800;font-size:calc(var(--cardFs) * .72);line-height:1.3;color:var(--c-ink)}
+.r2r .prep-bar.urgent .prep-clock{color:#c41616;animation:prepUrgent .55s ease-in-out infinite}
+.r2r .prep-bar.urgent .prep-status{color:#a31212}
+@keyframes prepUrgent{0%,100%{opacity:1;transform:scale(1);text-shadow:0 0 0 transparent}50%{opacity:.55;transform:scale(1.08);text-shadow:0 0 12px rgba(196,22,22,.55)}}
+@media (prefers-reduced-motion:reduce){.r2r .prep-bar.urgent .prep-clock{animation:none;opacity:1;transform:none;text-shadow:none}}
 .r2r .guess-box{margin:0 0 14px;padding:10px 12px 12px;background:var(--c-card);border:var(--ol);border-radius:12px;box-shadow:inset -4px -4px 0 var(--card-shade)}
 .r2r .guess-box[hidden]{display:none!important}
 .r2r .guess-rule{margin:0 0 10px;font-weight:800;font-size:clamp(15px,calc(2.2 * var(--vh,10.8px)),22px);line-height:1.3;color:var(--c-ink)}
@@ -1173,10 +1174,8 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
           <div class="prep-actions">
             <button class="btn" id="prepStartBtn" type="button">Start 1-min prep</button>
             <button class="btn btn-paper" id="prepResetBtn" type="button">Reset</button>
-            <label class="prep-sound"><input type="checkbox" id="prepSound"> Timer sound (off by default)</label>
           </div>
         </div>
-        <p class="race-note" id="raceNote">Silent race: every crew works this same ticket. The crew at the wheel uses the library and answers out loud. Waiting crews guess from memory — no library.</p>
         <div class="guess-box" id="guessBox">
           <p class="guess-rule" id="guessRule">Waiting crews: no library! Guess the framework from memory.</p>
           <div id="guessRows"></div>
@@ -1218,7 +1217,6 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
             <p class="score-advance" id="scoreHint"></p>
             <div class="actions" id="scoreActions">
               <button class="nail" id="nailBtn" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M4 10.2l12.4-5.1 1.7 4.2-12.6 4.6z"/><rect x="16.6" y="3.8" width="2.8" height="6.4" rx="1.2" transform="rotate(-22 18 7)"/><circle cx="2.8" cy="12.4" r="1.4"/></g><circle cx="9" cy="16" r="4.2" fill="none" stroke="currentColor" stroke-width="1.9"/><circle cx="9" cy="16" r="1.3" fill="currentColor"/><path d="M2 21.5h15" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></span>Nailed it · sail&nbsp;<span id="nailN">1</span></button>
-              <button class="nudge" id="nudgeBtn" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="4.5" r="2.2"/><path d="M12 6.7V21M7.5 10h9M4 14.5Q4.5 21 12 21q7.5 0 8-6.5"/><path d="M2.5 15.5L4 14l1.8 1.6M21.5 15.5L20 14l-1.8 1.6"/></g></svg></span><span id="nudgeTxt">Needed a nudge · sail 1</span></button>
               <button class="nudge miss" id="missBtn" type="button"><span class="ico" aria-hidden="true" id="missIc"></span><span id="missTxt">Missed it · next crew may steal</span></button>
             </div>
             <div class="actions steal-offer" id="stealOffer" hidden>
@@ -1274,7 +1272,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
         <li>The crew at the wheel rolls. A unique library ticket is drawn; the framework stays hidden. Every crew works this same ticket (a silent race).</li>
         <li>The host may press <b>Start 1-min prep</b> so all crews can prep in silence. Waiting crews guess the framework from memory — no library — for +1 if correct. The crew at the wheel uses the library to find the framework (they do not guess). Lock guesses, Hint, or Reveal locks waiting-crew picks; opening the library does not.</li>
         <li>Read the symptom aloud. The crew at the wheel explains the workflow in natural language and identifies the framework it represents, using the <b>Workflows Troubleshooting Library</b> — do not open a live Clay workspace. If they need a hint, reveal the framework name (this does not change their score, and it locks any unlocked waiting-crew guesses).</li>
-        <li>Reveal the diagnosis: a brief summary of the workflow context, root cause, and solution, plus the framework, what was checked first, the resolution, and the verdict. Correct waiting-crew guesses sail +1. Solved it on their own? The crew at the wheel sails the number they rolled. Needed a nudge? They sail 1. Missed it? The next crew in turn order may steal the question and, if they get it, sail that same advance.</li>
+        <li>Reveal the diagnosis: a brief summary of the workflow context, root cause, and solution, plus the framework, what was checked first, the resolution, and the verdict. Correct waiting-crew guesses sail +1. Solved it on their own? The crew at the wheel sails the number they rolled. Missed it? The next crew in turn order may steal the question and, if they get it, sail that same advance.</li>
         <li>The wheel passes to the next crew (or, after a successful steal, to the crew after the stealer). First to the chest wins the voyage.</li>
         <li>Sound: the <b>Music</b> and <b>Sound effects</b> buttons (keys <b>M</b> and <b>S</b>) switch the sea shanty and the effects on or off. Music starts off; your choice is remembered in this browser.</li>
       </ol>
@@ -1304,8 +1302,8 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
           <li><b>Observability</b> — Look here if a run is slow, stuck, or missing.</li>
         </ul>
       </li>
-      <li><b>Roll.</b> The crew at the wheel rolls; every crew works that ticket. <b>Nailed it</b> sails the number rolled. <b>Needed a nudge</b> sails 1. <b>Missed it</b> stays put, and the next crew may steal.</li>
-      <li><b>1-min prep.</b> The host presses <b>Start 1-min prep</b> — it never starts on its own. All crews prep in silence. The host can reset it.</li>
+      <li><b>Roll.</b> The crew at the wheel rolls; every crew works that ticket. <b>Nailed it</b> sails the number rolled. <b>Missed it</b> stays put, and the next crew may steal.</li>
+      <li><b>1-min prep.</b> The host presses <b>Start 1-min prep</b> — it never starts on its own. All crews prep in silence. The host can reset it. The last 10 seconds tick, and the clock turns red.</li>
       <li><b>Waiting-crew bonus.</b> Waiting crews guess the framework from memory, with <b>no library</b>, for +1 if correct. <b>Lock guesses</b>, <b>Hint</b>, or <b>Reveal</b> locks those picks — opening the library does not.</li>
       <li><b>Answer and score.</b> The crew at the wheel uses the library, explains the workflow, and names the framework (they do not guess). <b>Hint: show framework</b> does not change their score. Reveal awards +1 for correct guesses, then you score the wheel. First to 29 wins.</li>
     </ol>
@@ -1415,7 +1413,16 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
       seq.forEach(function(s){ brass(s[0],t+s[1],s[2],0.1); brass(s[0]-12,t+s[1],s[2],0.05); });
       [50,57,62].forEach(function(m){ tone({type:"triangle",f:mf(m),t:t+1.2,dur:0.7,a:0.02,peak:0.12,rel:0.5}); });
       tone({type:"sine",f:90,f2:50,t:t,dur:0.1,peak:0.4,rel:0.3}); tone({type:"sine",f:90,f2:50,t:t+1.2,dur:0.1,peak:0.45,rel:0.35});
-      [1318.5,1568,1760,2093,2637].forEach(function(f,i){ coin(t+1.95+i*0.08,f,0.12); }); }
+      [1318.5,1568,1760,2093,2637].forEach(function(f,i){ coin(t+1.95+i*0.08,f,0.12); }); },
+    "prep-tick":function(t){
+      tone({type:"square",f:1240,t:t,dur:0.05,peak:0.16,rel:0.06});
+      tone({type:"sine",f:1860,t:t,dur:0.03,peak:0.09,rel:0.05});
+    },
+    "prep-end":function(t){
+      tone({type:"sine",f:523,t:t,dur:0.14,peak:0.18,rel:0.2});
+      tone({type:"sine",f:784,t:t+0.14,dur:0.18,peak:0.2,rel:0.28});
+      tone({type:"triangle",f:1047,t:t+0.32,dur:0.28,peak:0.16,rel:0.4});
+    }
   };
   var last={};
   function play(name,arg){
@@ -1816,8 +1823,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
              names:["Port Crew","Starboard Crew"], armed:[], used:[], stealOffered:false,
              guesses:{}, guessesLocked:false, guessBonusApplied:false,
              prepRunning:false, prepEndsAt:0, prepDone:false};
-  var PREP_MS=60000, prepIv=null, prepSoundOn=false;
-  try{ prepSoundOn=localStorage.getItem("r2r-prep-sound")==="1"; }catch(e){}
+  var PREP_MS=60000, prepIv=null, prepTickAt=null;
   // armed[i] = the stop effect waiting for crew i's next turn ("fog" | "kraken" | "mutiny"), set when its ship lands on that stop
 
   var $=function(id){return document.getElementById(id);};
@@ -2134,9 +2140,9 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     }
   }
   function rectMid(el){ var r=el.getBoundingClientRect(); return {x:r.left+r.width/2, y:r.top+r.height/2, r:r}; }
-  // Cannon smoke + doubloons on "Nailed it"; a splash on "Needed a nudge". Capture phase = runs before the game handler hides the card.
+  // Cannon smoke + doubloons on "Nailed it"; a splash on a steal. Capture phase = runs before the game handler hides the card.
   document.addEventListener("click",function(e){
-    var nb=e.target.closest&&e.target.closest("#nailBtn"), nu=e.target.closest&&(e.target.closest("#nudgeBtn")||e.target.closest("#stealBtn"));
+    var nb=e.target.closest&&e.target.closest("#nailBtn"), nu=e.target.closest&&e.target.closest("#stealBtn");
     if(nb&&!nb.disabled){ var m=rectMid(nb); burst(m.r.left+34,m.y,"smoke",9,1.6,70); burst(m.x,m.r.top,"coin",18,1.9,190); flash(m.r.left+30,m.y); }
     else if(nu){ var q=rectMid(nu); burst(q.x,q.r.top+6,"drop",14,1.4,110); }
   },true);
@@ -2312,8 +2318,6 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   function configureOutcomes(){
     var c=state.card, f=c&&c.fx, t=state.turn, nx=(t+1)%crewCount(), cu=c?catchUp(t):false;
     $("nailN").textContent=state.roll+(cu?" +1 catch-up":"");
-    var nb=$("nudgeBtn"); nb.classList.toggle("miss",f==="fog");
-    $("nudgeTxt").textContent=f==="fog"?"Missed it (no hints in the fog) · stay put":"Needed a nudge · sail 1";
     var mb=$("missBtn"); if(mb) mb.hidden=false;
     var so=$("stealOffer"); if(so) so.hidden=true;
     var sb=$("stealBtn"); if(sb){ sb.hidden=false;
@@ -2384,7 +2388,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     renderHandsOn();
     var fx0=state.card.fx, cu0=catchUp(state.turn), nx0=state.names[(state.turn+1)%crewCount()];
     $("scoreHint").textContent="Crew solved it solo? Sail the number rolled ("+state.roll+(cu0?" +1 catch-up":"")+"). "
-      +(fx0==="fog"?"No hints in the fog: a miss stays put, then "+nx0+" may steal the advance. ":"Needed a hint? Sail 1. Missed it? "+nx0+" may steal and sail "+state.roll+". ")
+      +(fx0==="fog"?"No hints in the fog: a miss stays put, then "+nx0+" may steal the advance. ":"Missed it? "+nx0+" may steal and sail "+state.roll+". ")
       +"Waiting crews who locked the correct framework from memory already sailed +1.";
     $("revealBtn").hidden=true; $("revealBox").hidden=false; state.revealed=true;
     applyGuessBonuses();
@@ -2527,41 +2531,29 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     if(state.prepRunning && state.prepEndsAt) return Math.max(0, state.prepEndsAt-Date.now());
     return PREP_MS;
   }
-  function playPrepChime(){
-    if(!prepSoundOn) return;
-    try{
-      var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
-      var c=new AC(), now=c.currentTime;
-      [0,0.22].forEach(function(off,i){
-        var o=c.createOscillator(), g=c.createGain();
-        o.type="sine"; o.frequency.value=i?660:494;
-        g.gain.setValueAtTime(0.0001, now+off);
-        g.gain.exponentialRampToValueAtTime(0.08, now+off+0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, now+off+0.35);
-        o.connect(g); g.connect(c.destination); o.start(now+off); o.stop(now+off+0.4);
-      });
-      setTimeout(function(){ try{ c.close(); }catch(e){} }, 900);
-    }catch(e){}
-  }
   function renderPrep(){
     var bar=$("prepBar"), clock=$("prepClock"), status=$("prepStatus"), start=$("prepStartBtn");
     if(!bar) return;
     var has=!!state.card && !state.over;
     bar.hidden=!has;
-    if(!has){ stopPrepTick(); return; }
+    if(!has){ stopPrepTick(); bar.classList.remove("urgent","running","up"); return; }
     var rem=prepRemaining();
+    var secs=state.prepDone?0:Math.ceil(rem/1000);
+    var urgent=!!state.prepRunning && !state.prepDone && secs>=1 && secs<=10;
     clock.textContent=state.prepDone?"0:00":fmtPrep(rem);
     bar.classList.toggle("running", !!state.prepRunning && !state.prepDone);
     bar.classList.toggle("up", !!state.prepDone);
+    bar.classList.toggle("urgent", urgent);
     if(state.prepDone){ status.textContent="Time's up — prep is over"; if(start) start.disabled=false; }
     else if(state.prepRunning){ status.textContent="All crews: prep in silence"; if(start) start.disabled=true; }
     else { status.textContent="1-min prep — waiting for the host"; if(start) start.disabled=false; }
-    var sndEl=$("prepSound"); if(sndEl) sndEl.checked=!!prepSoundOn;
+    if(urgent && prepTickAt!==secs){ prepTickAt=secs; snd("prep-tick"); }
   }
   function finishPrep(){
     if(state.prepDone && !state.prepRunning) return;
     state.prepRunning=false; state.prepDone=true; state.prepEndsAt=0;
-    stopPrepTick(); renderPrep(); persist(); playPrepChime();
+    prepTickAt=null;
+    stopPrepTick(); renderPrep(); persist(); snd("prep-end");
   }
   function startPrepTick(){
     stopPrepTick();
@@ -2577,11 +2569,13 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     if(!state.card || state.over) return;
     var dur=(typeof ms==="number"&&ms>=0)?ms:PREP_MS;
     state.prepRunning=true; state.prepDone=false; state.prepEndsAt=Date.now()+dur;
+    prepTickAt=null;
     persist(); startPrepTick();
   }
   function resetPrep(){
     stopPrepTick();
     state.prepRunning=false; state.prepDone=false; state.prepEndsAt=0;
+    prepTickAt=null;
     renderPrep(); persist();
   }
   function resetRaceForNewCard(){
@@ -2744,7 +2738,6 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     }
   };
   $("nailBtn").addEventListener("click",function(){resolve("nail");});
-  $("nudgeBtn").addEventListener("click",function(){resolve("nudge");});
   $("stealBtn").addEventListener("click",function(){resolve("steal");});
   $("missBtn").addEventListener("click",function(){resolve("miss");});
   $("noStealBtn").addEventListener("click",function(){resolve("pass");});
@@ -2790,10 +2783,6 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   $("rulesOverlay").addEventListener("click",function(e){ if(e.target===this) closeRules(); });
   $("prepStartBtn").addEventListener("click",function(){ startPrep(PREP_MS); });
   $("prepResetBtn").addEventListener("click",function(){ resetPrep(); });
-  $("prepSound").addEventListener("change",function(){
-    prepSoundOn=!!$("prepSound").checked;
-    try{ localStorage.setItem("r2r-prep-sound", prepSoundOn?"1":"0"); }catch(e){}
-  });
   $("guessLockBtn").addEventListener("click",function(){ lockGuesses(); });
   document.addEventListener("keydown",function(e){
     if(e.key!=="Escape") return;
