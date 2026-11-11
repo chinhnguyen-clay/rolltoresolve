@@ -1070,12 +1070,17 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 .r2r .guess-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 8px;padding:8px 0 8px 10px;border-left:8px solid var(--gc,var(--c-ink))}
 .r2r .guess-name{flex:0 1 140px;font-weight:800;font-size:calc(var(--cardFs) * .72);color:var(--c-ink)}
 .r2r .guess-picks{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 220px}
-.r2r .guess-pick{appearance:none;background:var(--c-parchment);color:var(--c-ink);border:2px solid var(--c-ink);border-radius:999px;padding:6px 10px;font-family:var(--body);font-weight:700;font-size:clamp(12px,calc(1.6 * var(--vh,10.8px)),16px);cursor:pointer;line-height:1.2}
-.r2r .guess-pick[aria-pressed="true"]{background:var(--gc,var(--c-wood));color:var(--c-card);border-color:var(--c-ink);box-shadow:inset 0 -2px 0 rgba(0,0,0,.25)}
-.r2r .guess-pick:disabled{cursor:default;opacity:.85}
-.r2r .guess-box.locked .guess-pick:not([aria-pressed="true"]){opacity:.5}
+.r2r .guess-pick{appearance:none;-webkit-appearance:none;background:#fff8e4;color:#2a1b0c;border:2.5px solid #2a1b0c;border-radius:999px;padding:7px 12px;font-family:var(--body);font-weight:800;font-size:clamp(13px,calc(1.7 * var(--vh,10.8px)),17px);cursor:pointer;line-height:1.2}
+.r2r .guess-pick:hover:not(:disabled),.r2r .guess-pick:focus-visible:not(:disabled){background:#fff;border-color:#2a1b0c;box-shadow:0 0 0 3px color-mix(in srgb,var(--gc,#2a1b0c) 45%,transparent);transform:translateY(-1px)}
+.r2r .guess-pick[aria-pressed="true"]{background:var(--gc,var(--c-wood));color:#fff;border-color:color-mix(in srgb,var(--gc,#2a1b0c) 65%,#000);box-shadow:inset 0 -2px 0 rgba(0,0,0,.28);text-shadow:0 1px 0 rgba(0,0,0,.3)}
+.r2r .guess-pick[aria-pressed="true"]:hover:not(:disabled),.r2r .guess-pick[aria-pressed="true"]:focus-visible:not(:disabled){background:var(--gc,var(--c-wood));color:#fff;filter:brightness(1.08);transform:none}
+.r2r .guess-pick:disabled{cursor:not-allowed;opacity:1}
+.r2r .guess-box.locked .guess-pick:not([aria-pressed="true"]){opacity:.55;background:#e6d8b6;color:#5c4c38;border-color:#8a7a64;cursor:not-allowed;box-shadow:none}
+.r2r .guess-box.locked .guess-pick[aria-pressed="true"]{cursor:not-allowed;filter:none}
 .r2r .guess-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:6px}
 .r2r .guess-lock{width:auto;min-width:0;padding:8px 14px;font-size:clamp(14px,calc(1.8 * var(--vh,10.8px)),18px)}
+.r2r .guess-locked-flag{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;background:#2a1b0c;color:#fff8e4;font-weight:800;font-size:clamp(13px,calc(1.6 * var(--vh,10.8px)),16px);letter-spacing:.06em;text-transform:uppercase}
+.r2r .guess-locked-flag[hidden]{display:none!important}
 .r2r .guess-state{font-weight:700;color:var(--c-wood);font-size:.95rem}
 #rulesOverlay{z-index:2000}
 #rulesOverlay .rules-card{max-width:880px;max-height:calc(100vh - 16px);overflow:auto;padding:14px 26px 16px;box-sizing:border-box}
@@ -1177,7 +1182,8 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
           <div id="guessRows"></div>
           <div class="guess-meta">
             <button class="btn btn-paper guess-lock" id="guessLockBtn" type="button">Lock guesses</button>
-            <span class="guess-state" id="guessState">Host: lock waiting-crew guesses, then the crew at the wheel may open the library. Guesses also lock if the library, hint, or reveal is used.</span>
+            <span class="guess-locked-flag" id="guessLockedFlag" hidden>Locked</span>
+            <span class="guess-state" id="guessState">Pick a waiting-crew guess anytime until Lock guesses, Hint, or Reveal. Opening the library does not lock them.</span>
           </div>
         </div>
         <div class="face-row">
@@ -1266,7 +1272,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
       <summary>How a round runs (facilitator)</summary>
       <ol>
         <li>The crew at the wheel rolls. A unique library ticket is drawn; the framework stays hidden. Every crew works this same ticket (a silent race).</li>
-        <li>The host may press <b>Start 1-min prep</b> so all crews can prep in silence. Waiting crews guess the framework from memory — no library — for +1 if correct. The crew at the wheel uses the library to find the framework (they do not guess). Lock waiting-crew guesses before that library is opened; opening it, using the hint, or revealing also locks them.</li>
+        <li>The host may press <b>Start 1-min prep</b> so all crews can prep in silence. Waiting crews guess the framework from memory — no library — for +1 if correct. The crew at the wheel uses the library to find the framework (they do not guess). Lock guesses, Hint, or Reveal locks waiting-crew picks; opening the library does not.</li>
         <li>Read the symptom aloud. The crew at the wheel explains the workflow in natural language and identifies the framework it represents, using the <b>Workflows Troubleshooting Library</b> — do not open a live Clay workspace. If they need a hint, reveal the framework name (this does not change their score, and it locks any unlocked waiting-crew guesses).</li>
         <li>Reveal the diagnosis: a brief summary of the workflow context, root cause, and solution, plus the framework, what was checked first, the resolution, and the verdict. Correct waiting-crew guesses sail +1. Solved it on their own? The crew at the wheel sails the number they rolled. Needed a nudge? They sail 1. Missed it? The next crew in turn order may steal the question and, if they get it, sail that same advance.</li>
         <li>The wheel passes to the next crew (or, after a successful steal, to the crew after the stealer). First to the chest wins the voyage.</li>
@@ -1300,7 +1306,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
       </li>
       <li><b>Roll.</b> The crew at the wheel rolls; every crew works that ticket. <b>Nailed it</b> sails the number rolled. <b>Needed a nudge</b> sails 1. <b>Missed it</b> stays put, and the next crew may steal.</li>
       <li><b>1-min prep.</b> The host presses <b>Start 1-min prep</b> — it never starts on its own. All crews prep in silence. The host can reset it.</li>
-      <li><b>Waiting-crew bonus.</b> Waiting crews guess the framework from memory, with <b>no library</b>, for +1 if correct. The host locks those guesses, then the crew at the wheel may open the library.</li>
+      <li><b>Waiting-crew bonus.</b> Waiting crews guess the framework from memory, with <b>no library</b>, for +1 if correct. <b>Lock guesses</b>, <b>Hint</b>, or <b>Reveal</b> locks those picks — opening the library does not.</li>
       <li><b>Answer and score.</b> The crew at the wheel uses the library, explains the workflow, and names the framework (they do not guess). <b>Hint: show framework</b> does not change their score. Reveal awards +1 for correct guesses, then you score the wheel. First to 29 wins.</li>
     </ol>
     <div class="settings-actions">
@@ -2643,16 +2649,18 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
         var on=(state.guesses[String(i)]===f.key||state.guesses[i]===f.key);
         b.setAttribute("aria-pressed", on?"true":"false");
         b.disabled=locked;
-        b.addEventListener("click",function(){ setGuess(i,f.key); });
+        b.addEventListener("click",function(){ setGuess(b.getAttribute("data-crew"), f.key); });
         picks.appendChild(b);
       });
       row.appendChild(name); row.appendChild(picks); rows.appendChild(row);
     }
     if(lock){ lock.disabled=locked; lock.hidden=!!state.revealed; }
+    var flag=$("guessLockedFlag");
+    if(flag) flag.hidden=!locked;
     if(st){
       if(state.revealed) st.textContent="Guesses scored on reveal. Correct guesses sailed +1.";
-      else if(locked) st.textContent="Guesses are locked. The crew at the wheel may use the library.";
-      else st.textContent="Host: lock waiting-crew guesses, then the crew at the wheel may open the library. Guesses also lock if the library, hint, or reveal is used.";
+      else if(locked) st.textContent="Guesses can't be changed. The crew at the wheel may use the library.";
+      else st.textContent="Pick a waiting-crew guess anytime until Lock guesses, Hint, or Reveal. Opening the library does not lock them.";
     }
   }
   function renderRaceUI(){
@@ -2787,9 +2795,6 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     try{ localStorage.setItem("r2r-prep-sound", prepSoundOn?"1":"0"); }catch(e){}
   });
   $("guessLockBtn").addEventListener("click",function(){ lockGuesses(); });
-  $("libLinkWrap").addEventListener("click",function(e){
-    if(e.target.closest("a")) lockGuesses();
-  });
   document.addEventListener("keydown",function(e){
     if(e.key!=="Escape") return;
     if(!$("rulesOverlay").hidden) closeRules();
