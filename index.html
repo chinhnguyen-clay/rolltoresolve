@@ -2242,7 +2242,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     },55);
   }
   function rollText(card,n){
-    return (card.fx==="kraken"?"Kraken Deep forced a 6. ":"Rolled "+n+". ")+(n===6?"Kraken! ":"")+"Talk it through, then reveal.";
+    return card.fx==="kraken"?"Kraken Deep forced a 6. Kraken! Talk it through, then reveal.":"";
   }
   function settleRoll(n,pick){
     state.roll=n;
