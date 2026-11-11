@@ -1109,7 +1109,10 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 #r2r .view-badge{cursor:default;pointer-events:none}
 #r2r .live-dot{display:inline-block;width:.6em;height:.6em;margin-right:.45em;border-radius:50%;background:#2f8f5c;box-shadow:0 0 0 2px var(--c-card)}
 #r2r .view-badge.off .live-dot,#r2r #shareBtn.off .live-dot{background:var(--c-kraken)}
-#r2r #shareTxt b{font-family:var(--body);letter-spacing:.08em}
+#r2r .share-bubble{position:fixed;z-index:60;max-width:min(360px,calc(100vw - 16px));padding:8px 12px;background:var(--c-card);color:var(--c-ink);border:3px solid var(--c-ink);border-radius:10px;box-shadow:0 4px 0 rgba(42,27,12,.35);font-family:var(--body);font-weight:800;font-size:.95rem;line-height:1.25;opacity:0;transform:translateY(-4px);transition:opacity .18s,transform .18s;pointer-events:none}
+#r2r .share-bubble.show{opacity:1;transform:none;pointer-events:auto}
+#r2r .share-bubble::before{content:"";position:absolute;top:-9px;right:var(--tip,22px);width:12px;height:12px;background:var(--c-card);border-left:3px solid var(--c-ink);border-top:3px solid var(--c-ink);transform:rotate(45deg)}
+#r2r .share-bubble input{display:block;width:100%;margin-top:6px;padding:4px 6px;font:600 .85rem var(--body);color:var(--c-ink);background:#fffaf0;border:2px solid var(--c-ink);border-radius:6px}
 #r2r.viewing #revealBtn,#r2r.viewing #resetBtn,#r2r.viewing #wfBtn,#r2r.viewing .crew-count,
 #r2r.viewing #prepStartBtn,#r2r.viewing #prepResetBtn,#r2r.viewing #guessLockBtn{display:none!important}
 #r2r.viewing #rollBtn,#r2r.viewing #scoreActions,#r2r.viewing #stealOffer,#r2r.viewing .guess-picks,#r2r.viewing .crew-name{pointer-events:none}
@@ -2802,7 +2805,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
       var b=$("shareBtn"), t=$("shareTxt"), vb=$("viewBadge");
       if(S.mode==="view"){ b.hidden=true; vb.hidden=false; return; }
       vb.hidden=true; b.hidden=false;
-      if(S.code){ t.innerHTML='Share game · <b></b>'; t.querySelector("b").textContent=S.code; b.title="Copy the link for game "+S.code+" so others can watch live"; b.classList.remove("off"); }
+      if(S.code){ t.textContent="Share game"; b.title="Copy the link for game "+S.code+" so others can watch live"; b.classList.remove("off"); }
       else { t.textContent="Share game"; b.title="Game server unreachable. Playing on this device only."; b.classList.add("off"); }
     }
     function viewStatus(txt,off){ $("viewTxt").textContent=txt; $("viewBadge").classList.toggle("off",!!off); }
@@ -2842,10 +2845,25 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     }
     function copyLink(){
       if(!S.code){ ensureGame().catch(function(){}); return; }
-      var url=shareUrl(), t=$("shareTxt");
-      function done(){ t.textContent="Link copied!"; setTimeout(function(){ ui(); },1600); }
-      if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done,function(){ window.prompt("Share this link with the room:",url); });
-      else window.prompt("Share this link with the room:",url);
+      var url=shareUrl();
+      if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function(){ bubble(null); },function(){ bubble(url); });
+      else bubble(url);
+    }
+    var bubT=null;
+    // url=null: copied. Otherwise clipboard failed, so show the link to copy by hand (stays until dismissed).
+    function bubble(url){
+      var el=$("shareBubble"), btn=$("shareBtn");
+      if(!el){ el=document.createElement("div"); el.id="shareBubble"; el.className="share-bubble"; el.setAttribute("role","status"); $("r2r").appendChild(el);
+        document.addEventListener("click",function(e){ if(el.classList.contains("show")&&!el.contains(e.target)&&!btn.contains(e.target)) el.classList.remove("show"); }); }
+      clearTimeout(bubT);
+      el.textContent=url?"Copy this link to share the game:":"Link to game copied!";
+      if(url){ var inp=document.createElement("input"); inp.type="text"; inp.readOnly=true; inp.value=url; inp.setAttribute("aria-label","Game link"); el.appendChild(inp); }
+      var r=btn.getBoundingClientRect(); el.style.visibility="hidden"; el.classList.add("show");
+      var w=el.offsetWidth, left=Math.max(8,Math.min(innerWidth-w-8, r.right-w));
+      el.style.left=left+"px"; el.style.top=(r.bottom+12)+"px";
+      el.style.setProperty("--tip",Math.max(10,Math.min(w-24, r.right-left-r.width/2-6))+"px"); el.style.visibility="";
+      if(url){ var i2=el.querySelector("input"); i2.focus(); i2.select(); bubT=setTimeout(function(){ el.classList.remove("show"); },15000); }
+      else bubT=setTimeout(function(){ el.classList.remove("show"); },2000);
     }
     // Decide this tab's role before anything renders: ?game=CODE without that game's host token = viewer.
     function mode(){
