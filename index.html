@@ -1049,6 +1049,50 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 .r2r.fit .reveal:not([hidden]){padding-bottom:80px}
 .r2r.fit .reveal:not([hidden])>.actions{animation:none}
 
+/* ===== v8.1 silent race: prep timer, waiting-crew guesses, rules modal ===== */
+.r2r .prep-bar{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;margin:0 0 12px;padding:10px 12px;background:var(--c-parchment);border:var(--ol);border-radius:12px;box-shadow:inset -4px -4px 0 var(--card-shade)}
+.r2r .prep-bar[hidden]{display:none!important}
+.r2r .prep-clock{font-family:var(--pirate);font-size:clamp(2.1rem,calc(5.2 * var(--vh,10.8px)),3.4rem);line-height:1;color:var(--c-ink);min-width:4.2ch;text-align:center;letter-spacing:.02em}
+.r2r .prep-bar.running .prep-clock{color:var(--c-deep)}
+.r2r .prep-bar.up{background:var(--c-ink);border-color:var(--c-gold);box-shadow:inset -4px -4px 0 color-mix(in srgb,var(--c-ink) 70%,var(--c-gold)),0 0 0 3px var(--c-gold)}
+.r2r .prep-bar.up .prep-clock,.r2r .prep-bar.up .prep-status{color:var(--c-gold)}
+.r2r .prep-status{font-family:var(--body);font-weight:800;font-size:clamp(15px,calc(2.1 * var(--vh,10.8px)),22px);color:var(--c-wood);flex:1 1 140px;line-height:1.2}
+.r2r .prep-bar.up .prep-status{font-family:var(--pirate);font-size:clamp(1.4rem,calc(3.4 * var(--vh,10.8px)),2.1rem);color:var(--c-gold);letter-spacing:.02em}
+.r2r .prep-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.r2r .prep-actions .btn,.r2r .prep-actions .btn-paper{width:auto;min-width:0;padding:8px 14px;font-size:clamp(14px,calc(1.8 * var(--vh,10.8px)),18px)}
+.r2r .prep-actions .btn:disabled{opacity:.5;cursor:default;filter:none;transform:none}
+.r2r .prep-sound{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.9rem;color:var(--c-wood);cursor:pointer;user-select:none}
+.r2r .prep-sound input{width:16px;height:16px;accent-color:var(--c-wood)}
+.r2r .race-note{margin:0 0 10px;padding:8px 12px;background:var(--c-parchment);border:2px solid var(--c-ink);border-radius:10px;font-weight:800;font-size:calc(var(--cardFs) * .72);line-height:1.3;color:var(--c-ink)}
+.r2r .guess-box{margin:0 0 14px;padding:10px 12px 12px;background:var(--c-card);border:var(--ol);border-radius:12px;box-shadow:inset -4px -4px 0 var(--card-shade)}
+.r2r .guess-box[hidden]{display:none!important}
+.r2r .guess-rule{margin:0 0 10px;font-weight:800;font-size:clamp(15px,calc(2.2 * var(--vh,10.8px)),22px);line-height:1.3;color:var(--c-ink)}
+.r2r .guess-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 8px;padding:8px 0 8px 10px;border-left:8px solid var(--gc,var(--c-ink))}
+.r2r .guess-name{flex:0 1 140px;font-weight:800;font-size:calc(var(--cardFs) * .72);color:var(--c-ink)}
+.r2r .guess-picks{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 220px}
+.r2r .guess-pick{appearance:none;background:var(--c-parchment);color:var(--c-ink);border:2px solid var(--c-ink);border-radius:999px;padding:6px 10px;font-family:var(--body);font-weight:700;font-size:clamp(12px,calc(1.6 * var(--vh,10.8px)),16px);cursor:pointer;line-height:1.2}
+.r2r .guess-pick[aria-pressed="true"]{background:var(--gc,var(--c-wood));color:var(--c-card);border-color:var(--c-ink);box-shadow:inset 0 -2px 0 rgba(0,0,0,.25)}
+.r2r .guess-pick:disabled{cursor:default;opacity:.85}
+.r2r .guess-box.locked .guess-pick:not([aria-pressed="true"]){opacity:.5}
+.r2r .guess-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:6px}
+.r2r .guess-lock{width:auto;min-width:0;padding:8px 14px;font-size:clamp(14px,calc(1.8 * var(--vh,10.8px)),18px)}
+.r2r .guess-state{font-weight:700;color:var(--c-wood);font-size:.95rem}
+#rulesOverlay{z-index:2000}
+#rulesOverlay .rules-card{max-width:880px;max-height:calc(100vh - 16px);overflow:auto;padding:14px 26px 16px;box-sizing:border-box}
+#rulesOverlay .rules-card h2{font-size:clamp(1.7rem,3.4vh,2.25rem);margin:0 0 4px;padding-right:40px}
+.r2r .rules-close{position:absolute;top:8px;right:10px;z-index:3;width:40px;height:40px;border-radius:50%;border:var(--ol);background:var(--c-card);color:var(--c-ink);font-size:26px;line-height:1;cursor:pointer;box-shadow:inset 0 -2px 0 var(--card-shade);font-family:var(--body);font-weight:800}
+.r2r .rules-close:hover{background:var(--c-parchment)}
+.r2r .rules-sub{margin:0 0 8px;font-size:clamp(14px,1.7vh,17px);line-height:1.3;color:var(--c-wood);font-weight:700}
+.r2r .rules-steps{margin:0;padding:0 0 0 1.25em;display:grid;gap:7px;color:var(--c-ink);font-size:clamp(15px,1.85vh,18px);line-height:1.3;font-weight:500}
+.r2r .rules-steps>li::marker{font-family:var(--pirate);font-size:1.1em;color:var(--c-wood)}
+.r2r .rules-steps>li>b{font-family:var(--pirate);font-size:1.08em;font-weight:400;letter-spacing:.02em}
+.r2r .rules-steps a{color:var(--c-deep);font-weight:800}
+.r2r .lib-sections{list-style:none;margin:5px 0 0;padding:0;display:grid;gap:3px}
+.r2r .lib-sections li{background:var(--c-parchment);border:2px solid var(--c-ink);border-radius:8px;padding:3px 10px;font-size:clamp(13px,1.6vh,16px);line-height:1.3}
+.r2r .lib-sections b{color:var(--c-ink)}
+#rulesOverlay .settings-actions{display:none}
+
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1069,6 +1113,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
       <label class="ghost crew-count" for="crewCount"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="4.5" r="2.2"/><path d="M12 6.7V21M7.5 10h9M4 14.5Q4.5 21 12 21q7.5 0 8-6.5"/><path d="M2.5 15.5L4 14l1.8 1.6M21.5 15.5L20 14l-1.8 1.6"/></g></svg></span>Crews&nbsp;<select id="crewCount" aria-label="Number of crews (starts a new voyage)">
         <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label>
       <button class="ghost" id="wfBtn" type="button" aria-haspopup="dialog"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 5.5l5.5-2 7 2 5.5-2v15l-5.5 2-7-2-5.5 2z"/><path d="M8.5 3.5v15M15.5 5.5v15"/></g><path d="M10.6 9.6l2.8 2.8m0-2.8l-2.8 2.8" stroke="currentColor" stroke-width="2.4"/></svg></span>Workflows</button>
+      <button class="ghost" id="rulesBtn" type="button" aria-haspopup="dialog" aria-controls="rulesOverlay"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h9.5A2.5 2.5 0 0 1 18 6v14.5H8A2 2 0 0 1 6 18.5z"/><path d="M6 3.5v15A2 2 0 0 0 8 20.5h12"/><path d="M9.5 8h6M9.5 11.5h6M9.5 15h4"/></g></svg></span>Rules</button>
       <button class="ghost" id="logBtn" type="button" aria-haspopup="dialog"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h11a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"/><path d="M8 20a3 3 0 0 1 0-6h11M9 8.5h6M9 11h4"/></g></svg></span>Captain's log</button>
       <button class="ghost" id="themeBtn" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M12 1.5V3M7.5 6h9l-1 12h-7z"/><path d="M6.5 21h11M9 18v3M15 18v3"/></g><path d="M12 9.5c1.6 1.8 1.6 3.8 0 5.5-1.6-1.7-1.6-3.7 0-5.5z" fill="currentColor"/></svg></span>Theme</button>
       <button class="ghost" id="resetBtn" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M11 2v13H4z" opacity=".85"/><path d="M12.5 3.5V15H19z"/><path d="M2 16.5h20l-3 4.5H5z"/></g></svg></span>New voyage</button>
@@ -1113,10 +1158,28 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
       <div class="case-empty" id="caseEmpty">
         <div class="scroll-ic" id="scrollIc"></div>
         <div class="big">No distress call yet.</div>
-        The die draws a unique ticket from the Workflows Troubleshooting Library. The framework stays hidden — explain the workflow in natural language and identify which framework it represents. Look it up in the library if you need to, but don't open a live Clay workspace. There is no timer.
+        The die draws a unique ticket from the Workflows Troubleshooting Library. This is a silent race: every crew works the same ticket. The host can start a 1-minute prep timer. The crew at the wheel uses the library to find the framework and answers out loud. Waiting crews guess the framework from memory (no library) for +1 if correct. Don't open a live Clay workspace.
       </div>
 
       <div id="caseBody" hidden>
+        <div class="prep-bar" id="prepBar">
+          <div class="prep-clock" id="prepClock" aria-live="polite">1:00</div>
+          <div class="prep-status" id="prepStatus">1-min prep — waiting for the host</div>
+          <div class="prep-actions">
+            <button class="btn" id="prepStartBtn" type="button">Start 1-min prep</button>
+            <button class="btn btn-paper" id="prepResetBtn" type="button">Reset</button>
+            <label class="prep-sound"><input type="checkbox" id="prepSound"> Timer sound (off by default)</label>
+          </div>
+        </div>
+        <p class="race-note" id="raceNote">Silent race: every crew works this same ticket. The crew at the wheel uses the library and answers out loud. Waiting crews guess from memory — no library.</p>
+        <div class="guess-box" id="guessBox">
+          <p class="guess-rule" id="guessRule">Waiting crews: no library! Guess the framework from memory.</p>
+          <div id="guessRows"></div>
+          <div class="guess-meta">
+            <button class="btn btn-paper guess-lock" id="guessLockBtn" type="button">Lock guesses</button>
+            <span class="guess-state" id="guessState">Host: lock waiting-crew guesses, then the crew at the wheel may open the library. Guesses also lock if the library, hint, or reveal is used.</span>
+          </div>
+        </div>
         <div class="face-row">
           <span class="face-chip"><span class="dot" id="faceDot"></span><span id="faceName">Triggers</span></span>
           <span class="face-tag" id="faceTag"></span>
@@ -1127,7 +1190,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
           <div class="from"><span>Library ticket <span id="ticketAuthor"></span></span><span class="tk"><span id="ticketId">#--------</span><span class="ob-mark" id="obMark" title="Facilitator: open-bug card (swap candidate, see the rules doc)" hidden>†</span></span></div>
           <p id="ticketText"></p>
           <p class="lib-prompt" id="libPrompt">Can you explain this workflow in natural language and identify the framework it represents?</p>
-          <p class="lib-link">The <a href="https://claude.ai/artifact/2LGoFmnTtGxEbgZJ4HGWKc?sk=v1Dm7lsX49_pkpbt34Nh_A" target="_blank" rel="noopener">Workflows Troubleshooting Library</a> is here if you want to look the ticket up.</p>
+          <p class="lib-link" id="libLinkWrap">Crew at the wheel: use the <a href="https://claude.ai/artifact/2LGoFmnTtGxEbgZJ4HGWKc?sk=v1Dm7lsX49_pkpbt34Nh_A" target="_blank" rel="noopener">Workflows Troubleshooting Library</a> to look the ticket up and find the framework. Waiting crews may not use it.</p>
         </div>
         <p class="ws-warn">Don't open a live Clay workspace. Live workspaces can leave broken workflows behind (for example, Javier's ticket: works from the Run button, fails via Claude MCP — missing work email).</p>
         <div class="reveal-wrap">
@@ -1202,10 +1265,11 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     <details class="howto" open>
       <summary>How a round runs (facilitator)</summary>
       <ol>
-        <li>The crew at the wheel rolls. A unique library ticket is drawn; the framework stays hidden.</li>
-        <li>Read the symptom aloud. The crew explains the workflow in natural language and identifies the framework it represents. The <b>Workflows Troubleshooting Library</b> is there if they want to look the ticket up — do not open a live Clay workspace. If they need a hint, reveal the framework name (this does not change the score).</li>
-        <li>Reveal the diagnosis: a brief summary of the workflow context, root cause, and solution, plus the framework, what was checked first, the resolution, and the verdict. Solved it on their own? They sail the number they rolled. Needed a nudge? They sail 1. Missed it? The next crew in turn order may steal the question and, if they get it, sail that same advance.</li>
-        <li>The wheel passes to the next crew (or, after a successful steal, to the crew after the stealer). There is no timer. First to the chest wins the voyage.</li>
+        <li>The crew at the wheel rolls. A unique library ticket is drawn; the framework stays hidden. Every crew works this same ticket (a silent race).</li>
+        <li>The host may press <b>Start 1-min prep</b> so all crews can prep in silence. Waiting crews guess the framework from memory — no library — for +1 if correct. The crew at the wheel uses the library to find the framework (they do not guess). Lock waiting-crew guesses before that library is opened; opening it, using the hint, or revealing also locks them.</li>
+        <li>Read the symptom aloud. The crew at the wheel explains the workflow in natural language and identifies the framework it represents, using the <b>Workflows Troubleshooting Library</b> — do not open a live Clay workspace. If they need a hint, reveal the framework name (this does not change their score, and it locks any unlocked waiting-crew guesses).</li>
+        <li>Reveal the diagnosis: a brief summary of the workflow context, root cause, and solution, plus the framework, what was checked first, the resolution, and the verdict. Correct waiting-crew guesses sail +1. Solved it on their own? The crew at the wheel sails the number they rolled. Needed a nudge? They sail 1. Missed it? The next crew in turn order may steal the question and, if they get it, sail that same advance.</li>
+        <li>The wheel passes to the next crew (or, after a successful steal, to the crew after the stealer). First to the chest wins the voyage.</li>
         <li>Sound: the <b>Music</b> and <b>Sound effects</b> buttons (keys <b>M</b> and <b>S</b>) switch the sea shanty and the effects on or off. Music starts off; your choice is remembered in this browser.</li>
       </ol>
     </details>
@@ -1216,6 +1280,31 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     works from the Run button, fails via Claude MCP — missing work email).</p>
     <div class="settings-actions">
       <button class="btn" id="logDone" type="button">Back to the voyage</button>
+    </div>
+  </div>
+</div>
+<div class="win settings log" id="rulesOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+  <div class="win-card settings-card log-card rules-card">
+    <button class="rules-close" id="rulesClose" type="button" aria-label="Close rules">&times;</button>
+    <h2 id="rulesTitle">Rules of the voyage</h2>
+    <p class="rules-sub">Silent race for 2 to 6 crews. First to Treasure (waypoint 29) wins. Don't open a live Clay workspace.</p>
+    <ol class="rules-steps">
+      <li><b>The library.</b> The crew at the wheel uses the <a href="https://claude.ai/artifact/2LGoFmnTtGxEbgZJ4HGWKc?sk=v1Dm7lsX49_pkpbt34Nh_A" target="_blank" rel="noopener">Workflows Troubleshooting Library</a> to find the framework. Waiting crews may not.
+        <ul class="lib-sections">
+          <li><b>Triggers</b> — Look here if the workflow didn't fire.</li>
+          <li><b>Versions</b> — Look here if Live, Draft, or Ran don't match.</li>
+          <li><b>Passing data</b> — Look here if a value is missing or the wrong shape.</li>
+          <li><b>Write-backs</b> — Look here if a write was sent but didn't stick.</li>
+          <li><b>Observability</b> — Look here if a run is slow, stuck, or missing.</li>
+        </ul>
+      </li>
+      <li><b>Roll.</b> The crew at the wheel rolls; every crew works that ticket. <b>Nailed it</b> sails the number rolled. <b>Needed a nudge</b> sails 1. <b>Missed it</b> stays put, and the next crew may steal.</li>
+      <li><b>1-min prep.</b> The host presses <b>Start 1-min prep</b> — it never starts on its own. All crews prep in silence. The host can reset it.</li>
+      <li><b>Waiting-crew bonus.</b> Waiting crews guess the framework from memory, with <b>no library</b>, for +1 if correct. The host locks those guesses, then the crew at the wheel may open the library.</li>
+      <li><b>Answer and score.</b> The crew at the wheel uses the library, explains the workflow, and names the framework (they do not guess). <b>Hint: show framework</b> does not change their score. Reveal awards +1 for correct guesses, then you score the wheel. First to 29 wins.</li>
+    </ol>
+    <div class="settings-actions">
+      <button class="btn" id="rulesDone" type="button">Back to the voyage</button>
     </div>
   </div>
 </div>
@@ -1718,7 +1807,11 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 
   // ---------- State ----------
   var state={pos:[0,0], turn:0, roll:0, face:0, card:null, revealed:false, fwHint:false, over:false,
-             names:["Port Crew","Starboard Crew"], armed:[], used:[], stealOffered:false};
+             names:["Port Crew","Starboard Crew"], armed:[], used:[], stealOffered:false,
+             guesses:{}, guessesLocked:false, guessBonusApplied:false,
+             prepRunning:false, prepEndsAt:0, prepDone:false};
+  var PREP_MS=60000, prepIv=null, prepSoundOn=false;
+  try{ prepSoundOn=localStorage.getItem("r2r-prep-sound")==="1"; }catch(e){}
   // armed[i] = the stop effect waiting for crew i's next turn ("fog" | "kraken" | "mutiny"), set when its ship lands on that stop
 
   var $=function(id){return document.getElementById(id);};
@@ -2127,6 +2220,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
       state.face=n-1; }
     card.fx=fxNow; // the stop effect that applies to this turn (null for none)
     state.card=card; state.revealed=false; state.fwHint=false; state.stealOffered=false;
+    resetRaceForNewCard();
     showCase(card,n);
     if(card.wild) krakenFx();
     if(fxNow) announce(fxNow, fxNow==="kraken"?"The Kraken rises from the deep!":(fxNow==="fog"?"Fog rolls in!":"Mutiny brewing!"), FX[fxNow].now(state.names[state.turn],state.names[(state.turn+1)%crewCount()]));
@@ -2185,8 +2279,10 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   }
   function showHint(){
     if(!state.card || state.revealed || state.fwHint) return;
+    lockGuesses(true);
     state.fwHint=true;
     applyFrameworkVisibility();
+    renderRaceUI();
     persist();
   }
   function showCase(card,n){
@@ -2200,6 +2296,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     $("revealBox").hidden=true; $("revealBtn").hidden=false; $("caseBody").hidden=false; $("caseEmpty").hidden=true;
     $("nailN").textContent=n;
     configureOutcomes();
+    renderRaceUI();
   }
   function catchUp(t){ // 3+ crews, strictly behind every other crew
     if(crewCount()<3) return false;
@@ -2282,8 +2379,11 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     var fx0=state.card.fx, cu0=catchUp(state.turn), nx0=state.names[(state.turn+1)%crewCount()];
     $("scoreHint").textContent="Crew solved it solo? Sail the number rolled ("+state.roll+(cu0?" +1 catch-up":"")+"). "
       +(fx0==="fog"?"No hints in the fog: a miss stays put, then "+nx0+" may steal the advance. ":"Needed a hint? Sail 1. Missed it? "+nx0+" may steal and sail "+state.roll+". ")
-      +"There is no timer — talk it out.";
-    $("revealBtn").hidden=true; $("revealBox").hidden=false; state.revealed=true; persist(); snd("reveal");
+      +"Waiting crews who locked the correct framework from memory already sailed +1.";
+    $("revealBtn").hidden=true; $("revealBox").hidden=false; state.revealed=true;
+    applyGuessBonuses();
+    renderRaceUI();
+    persist(); snd("reveal");
     try{
       var sc=$("caseScroll"), box=$("answerSummary")||$("revealBox");
       if(sc&&box){ var br=box.getBoundingClientRect(), sr=sc.getBoundingClientRect(); sc.scrollTop += (br.top-sr.top)-6; }
@@ -2331,7 +2431,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     if(news.length){ var top=news[0]; announce(top.k, top.t, news.map(function(x){return x.s;}).join(" ")); }
     state.stealOffered=false;
     state.turn=(kind==="steal")?(nx+1)%n:nx;
-    state.card=null; state.revealed=false; $("dieIc").hidden=true;
+    state.card=null; state.revealed=false; resetRaceForNewCard(); $("dieIc").hidden=true;
     $("caseBody").hidden=true; $("caseEmpty").hidden=false;
     $("rollBtn").disabled=false; $("rollLabel").textContent="Roll the bones to draw a distress call.";
     renderTurn(); pendingNote(); persist();
@@ -2357,7 +2457,9 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   function reset(count){
     var n=Math.max(2,Math.min(MAX_CREWS,parseInt(count,10)||crewCount()||2)), pos=[], names=[];
     for(var i=0;i<n;i++){ pos.push(0); var el=$("name"+i); names.push((el&&el.value)||CREW_DEFAULTS[i]); }
-    state={pos:pos,turn:0,roll:0,face:0,card:null,revealed:false,fwHint:false,over:false,names:names,armed:[],used:[],stealOffered:false};
+    state={pos:pos,turn:0,roll:0,face:0,card:null,revealed:false,fwHint:false,over:false,names:names,armed:[],used:[],stealOffered:false,
+            guesses:{},guessesLocked:false,guessBonusApplied:false,prepRunning:false,prepEndsAt:0,prepDone:false};
+    stopPrepTick();
     renderCrews();
     $("winOverlay").hidden=true; stopConfetti(); $("dieIc").hidden=true;
     $("caseBody").hidden=true; $("caseEmpty").hidden=false;
@@ -2403,6 +2505,163 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     requestAnimationFrame(layoutMap);
   });
 
+  // ---------- v8.1 silent race: prep timer + waiting-crew guesses ----------
+  var GUESS_FACES=FACES.slice(0,5);
+  function ticketFwKey(){
+    var card=state.card, c=card&&card.src;
+    if(c&&c.fw) return c.fw;
+    if(card&&card.wildKey) return card.wildKey;
+    if(card&&!card.wild&&typeof card.face==="number") return FACES[card.face].key;
+    return null;
+  }
+  function stopPrepTick(){ if(prepIv){ clearInterval(prepIv); prepIv=null; } }
+  function fmtPrep(ms){ var s=Math.max(0,Math.ceil(ms/1000)); var m=Math.floor(s/60); s=s%60; return m+":"+(s<10?"0":"")+s; }
+  function prepRemaining(){
+    if(state.prepDone) return 0;
+    if(state.prepRunning && state.prepEndsAt) return Math.max(0, state.prepEndsAt-Date.now());
+    return PREP_MS;
+  }
+  function playPrepChime(){
+    if(!prepSoundOn) return;
+    try{
+      var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+      var c=new AC(), now=c.currentTime;
+      [0,0.22].forEach(function(off,i){
+        var o=c.createOscillator(), g=c.createGain();
+        o.type="sine"; o.frequency.value=i?660:494;
+        g.gain.setValueAtTime(0.0001, now+off);
+        g.gain.exponentialRampToValueAtTime(0.08, now+off+0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, now+off+0.35);
+        o.connect(g); g.connect(c.destination); o.start(now+off); o.stop(now+off+0.4);
+      });
+      setTimeout(function(){ try{ c.close(); }catch(e){} }, 900);
+    }catch(e){}
+  }
+  function renderPrep(){
+    var bar=$("prepBar"), clock=$("prepClock"), status=$("prepStatus"), start=$("prepStartBtn");
+    if(!bar) return;
+    var has=!!state.card && !state.over;
+    bar.hidden=!has;
+    if(!has){ stopPrepTick(); return; }
+    var rem=prepRemaining();
+    clock.textContent=state.prepDone?"0:00":fmtPrep(rem);
+    bar.classList.toggle("running", !!state.prepRunning && !state.prepDone);
+    bar.classList.toggle("up", !!state.prepDone);
+    if(state.prepDone){ status.textContent="Time's up — prep is over"; if(start) start.disabled=false; }
+    else if(state.prepRunning){ status.textContent="All crews: prep in silence"; if(start) start.disabled=true; }
+    else { status.textContent="1-min prep — waiting for the host"; if(start) start.disabled=false; }
+    var sndEl=$("prepSound"); if(sndEl) sndEl.checked=!!prepSoundOn;
+  }
+  function finishPrep(){
+    if(state.prepDone && !state.prepRunning) return;
+    state.prepRunning=false; state.prepDone=true; state.prepEndsAt=0;
+    stopPrepTick(); renderPrep(); persist(); playPrepChime();
+  }
+  function startPrepTick(){
+    stopPrepTick();
+    if(state.prepRunning && Date.now()>=state.prepEndsAt){ finishPrep(); return; }
+    prepIv=setInterval(function(){
+      if(!state.prepRunning){ stopPrepTick(); renderPrep(); return; }
+      if(Date.now()>=state.prepEndsAt){ finishPrep(); return; }
+      renderPrep();
+    },100);
+    renderPrep();
+  }
+  function startPrep(ms){
+    if(!state.card || state.over) return;
+    var dur=(typeof ms==="number"&&ms>=0)?ms:PREP_MS;
+    state.prepRunning=true; state.prepDone=false; state.prepEndsAt=Date.now()+dur;
+    persist(); startPrepTick();
+  }
+  function resetPrep(){
+    stopPrepTick();
+    state.prepRunning=false; state.prepDone=false; state.prepEndsAt=0;
+    renderPrep(); persist();
+  }
+  function resetRaceForNewCard(){
+    stopPrepTick();
+    state.guesses={}; state.guessesLocked=false; state.guessBonusApplied=false;
+    state.prepRunning=false; state.prepDone=false; state.prepEndsAt=0;
+  }
+  function libraryAllowed(){ return !!(state.card && !state.over); }
+  function setGuess(i,key){
+    i=+i;
+    if(!state.card || state.revealed || state.guessesLocked || state.over) return;
+    if(i===state.turn || i<0 || i>=crewCount()) return;
+    var ok=GUESS_FACES.some(function(f){ return f.key===key; });
+    if(!ok) return;
+    state.guesses[i]=key; renderGuessUI(); persist();
+  }
+  function lockGuesses(quiet){
+    if(state.guessesLocked) return;
+    state.guessesLocked=true;
+    if(!quiet) renderRaceUI();
+    persist();
+  }
+  function applyGuessBonuses(){
+    lockGuesses(true);
+    if(state.guessBonusApplied || !state.card || state.over) return [];
+    state.guessBonusApplied=true;
+    var key=ticketFwKey(), hits=[], n=crewCount();
+    for(var i=0;i<n;i++){
+      if(i===state.turn) continue;
+      if(state.guesses[String(i)]===key || state.guesses[i]===key){
+        state.pos[i]=Math.min(TRACK, state.pos[i]+1);
+        hits.push(i);
+      }
+    }
+    if(hits.length){
+      placeTokens();
+      var names=hits.map(function(i){ return state.names[i]; }).join(" and ");
+      announce("catchup","Framework guess!",(hits.length>1?names+" named the framework from memory and each sail +1.":names+" named the framework from memory and sails +1."));
+      for(var j=0;j<hits.length;j++){
+        var m=hits[j], f=NODES[state.pos[m]]&&NODES[state.pos[m]].fx;
+        if(f) state.armed[m]=f;
+      }
+    }
+    persist();
+    for(var k=0;k<hits.length;k++){ if(state.pos[hits[k]]>=TRACK){ win(hits[k]); break; } }
+    return hits;
+  }
+  function renderGuessUI(){
+    var box=$("guessBox"), rows=$("guessRows"), lock=$("guessLockBtn"), st=$("guessState");
+    if(!box) return;
+    var show=!!state.card && !state.over;
+    box.hidden=!show; if(!show) return;
+    box.classList.toggle("locked", !!state.guessesLocked || !!state.revealed);
+    rows.innerHTML="";
+    var n=crewCount(), locked=state.guessesLocked||state.revealed;
+    for(var i=0;i<n;i++){
+      if(i===state.turn) continue;
+      var row=document.createElement("div"); row.className="guess-row";
+      row.style.setProperty("--gc", teamColor[i]);
+      var name=document.createElement("div"); name.className="guess-name"; name.textContent=state.names[i];
+      var picks=document.createElement("div"); picks.className="guess-picks";
+      GUESS_FACES.forEach(function(f){
+        var b=document.createElement("button"); b.type="button"; b.className="guess-pick";
+        b.textContent=f.name; b.setAttribute("data-crew",String(i)); b.setAttribute("data-fw",f.key);
+        var on=(state.guesses[String(i)]===f.key||state.guesses[i]===f.key);
+        b.setAttribute("aria-pressed", on?"true":"false");
+        b.disabled=locked;
+        b.addEventListener("click",function(){ setGuess(i,f.key); });
+        picks.appendChild(b);
+      });
+      row.appendChild(name); row.appendChild(picks); rows.appendChild(row);
+    }
+    if(lock){ lock.disabled=locked; lock.hidden=!!state.revealed; }
+    if(st){
+      if(state.revealed) st.textContent="Guesses scored on reveal. Correct guesses sailed +1.";
+      else if(locked) st.textContent="Guesses are locked. The crew at the wheel may use the library.";
+      else st.textContent="Host: lock waiting-crew guesses, then the crew at the wheel may open the library. Guesses also lock if the library, hint, or reveal is used.";
+    }
+  }
+  function renderRaceUI(){
+    renderPrep();
+    renderGuessUI();
+    var wrap=$("libLinkWrap");
+    if(wrap) wrap.classList.remove("is-held");
+  }
+
   // ---------- Persistence ----------
   function persist(){ try{ sessionStorage.setItem("r2r2",JSON.stringify(state)); }catch(e){} }
   function restore(){
@@ -2413,9 +2672,18 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
         if(!Array.isArray(state.used)) state.used=[];
         if(typeof state.stealOffered!=="boolean") state.stealOffered=false;
         if(typeof state.fwHint!=="boolean") state.fwHint=false;
+        if(!state.guesses||typeof state.guesses!=="object") state.guesses={};
+        if(typeof state.guessesLocked!=="boolean") state.guessesLocked=false;
+        if(typeof state.guessBonusApplied!=="boolean") state.guessBonusApplied=false;
+        if(typeof state.prepRunning!=="boolean") state.prepRunning=false;
+        if(typeof state.prepDone!=="boolean") state.prepDone=false;
+        if(typeof state.prepEndsAt!=="number") state.prepEndsAt=0;
         renderCrews();
         placeTokens(); renderTurn();
+        if(state.revealed) state.guessBonusApplied=true; // already in the saved positions; don't apply twice
         if(state.card){ showCase(state.card,state.roll); if(state.revealed) reveal(); } else pendingNote();
+        renderRaceUI();
+        if(state.prepRunning && state.prepEndsAt) startPrepTick();
         if(state.over) win(state.turn);
         return true;
       }
@@ -2428,7 +2696,9 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   $("hintBtn").addEventListener("click",showHint);
   $("revealBtn").addEventListener("click",reveal);
   window.__R2R={
-    set:function(p){ Object.assign(state,p||{}); renderCrews(); placeTokens(true); renderTurn(); persist(); },
+    set:function(p){ Object.assign(state,p||{});
+      if(!state.guesses||typeof state.guesses!=="object") state.guesses={};
+      renderCrews(); placeTokens(true); renderTurn(); renderRaceUI(); persist(); },
     state:function(){ return state; },
     settle:function(n){ settleRoll(n); },
     resolve:function(kind){ resolve(kind); },
@@ -2439,6 +2709,12 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     track:function(){ return TRACK; },
     hint:function(){ showHint(); },
     reveal:function(){ reveal(); },
+    startPrep:function(ms){ startPrep(typeof ms==="number"?ms:PREP_MS); },
+    resetPrep:function(){ resetPrep(); },
+    setGuess:function(i,key){ setGuess(i,key); },
+    lockGuesses:function(){ lockGuesses(); },
+    openRules:function(){ openRules(); },
+    closeRules:function(){ closeRules(); },
     settleNamed:function(n,id){
       var t=TICKETS.filter(function(x){ return x.id===id; })[0];
       if(!t) return;
@@ -2449,6 +2725,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
       else { card={face:n-1,src:t,fallback:false,restocked:false}; state.face=n-1; }
       card.fx=fxNow;
       state.card=card; state.revealed=false; state.fwHint=false; state.stealOffered=false;
+      resetRaceForNewCard();
       if((state.used||[]).indexOf(t.id)<0) state.used=(state.used||[]).concat([t.id]);
       drawDie(n);
       showCase(card,n);
@@ -2497,7 +2774,28 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   $("logBtn").addEventListener("click",openLog);
   $("logDone").addEventListener("click",closeLog);
   $("logOverlay").addEventListener("click",function(e){ if(e.target===this) closeLog(); });
-  document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !$("wfOverlay").hidden) closeWf(); else if(e.key==="Escape" && !$("logOverlay").hidden) closeLog(); });
+  function openRules(){ $("rulesOverlay").hidden=false; ($("rulesClose")||$("rulesDone")).focus(); }
+  function closeRules(){ $("rulesOverlay").hidden=true; $("rulesBtn").focus(); }
+  $("rulesBtn").addEventListener("click",openRules);
+  $("rulesDone").addEventListener("click",closeRules);
+  $("rulesClose").addEventListener("click",closeRules);
+  $("rulesOverlay").addEventListener("click",function(e){ if(e.target===this) closeRules(); });
+  $("prepStartBtn").addEventListener("click",function(){ startPrep(PREP_MS); });
+  $("prepResetBtn").addEventListener("click",function(){ resetPrep(); });
+  $("prepSound").addEventListener("change",function(){
+    prepSoundOn=!!$("prepSound").checked;
+    try{ localStorage.setItem("r2r-prep-sound", prepSoundOn?"1":"0"); }catch(e){}
+  });
+  $("guessLockBtn").addEventListener("click",function(){ lockGuesses(); });
+  $("libLinkWrap").addEventListener("click",function(e){
+    if(e.target.closest("a")) lockGuesses();
+  });
+  document.addEventListener("keydown",function(e){
+    if(e.key!=="Escape") return;
+    if(!$("rulesOverlay").hidden) closeRules();
+    else if(!$("wfOverlay").hidden) closeWf();
+    else if(!$("logOverlay").hidden) closeLog();
+  });
   var rz; function queueFit(){ clearTimeout(rz); rz=setTimeout(refit,120); }
   if(window.ResizeObserver){ var ro=new ResizeObserver(queueFit); ro.observe($("r2r")); ro.observe($("boardBox")); }
   window.addEventListener("resize",function(){
