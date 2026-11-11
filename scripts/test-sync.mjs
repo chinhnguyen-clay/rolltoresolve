@@ -1,6 +1,7 @@
 // Security + sync checks for the shared game API.
 //   node scripts/test-sync.mjs http://localhost:3000
 //   node scripts/test-sync.mjs https://<deployment>.vercel.app
+//   (protected previews: set BYPASS=<automation bypass secret>, or COOKIE="_vercel_jwt=..." from a share link)
 // Proves: the page ships no answers; only the host token can draw, push, or reveal; viewers never
 // receive answer fields before the host reveals; a token for a different game can't reveal this one.
 import fs from "node:fs";
@@ -8,7 +9,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const BASE = (process.argv[2] || "http://localhost:3000").replace(/\/$/, "");
-const HEADERS = process.env.BYPASS ? { "x-vercel-protection-bypass": process.env.BYPASS } : {};
+const HEADERS = {
+  ...(process.env.BYPASS ? { "x-vercel-protection-bypass": process.env.BYPASS } : {}),
+  ...(process.env.COOKIE ? { cookie: process.env.COOKIE } : {}),
+};
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const TICKETS = JSON.parse(fs.readFileSync(path.join(ROOT, "api/_lib/tickets.json"), "utf8"));
 const ANSWER = ["fw", "framework", "secondary", "failure", "first", "resolution", "next", "verdict", "overview"];
