@@ -987,6 +987,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 .r2r .reveal>.score-advance{grid-row:8}
 .r2r .reveal>.actions{grid-row:9}
 .r2r .roll-label{min-height:0}
+.r2r .roll-label:empty{display:none}
 /* ===================== v6: sound toggles (Music / Sound effects) ===================== */
 .snd{display:flex;gap:6px}
 .r2r header.top .ghost.snd-btn{gap:6px}
@@ -1155,24 +1156,20 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
         </div>
       </div>
       <button class="btn" id="rollBtn" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="6.2"/><circle cx="12" cy="12" r="1.9" fill="currentColor"/><path d="M12 1.5v4.3M12 18.2v4.3M1.5 12h4.3M18.2 12h4.3M4.6 4.6l3 3M16.4 16.4l3 3M4.6 19.4l3-3M16.4 7.6l3-3"/></g></svg></span>Roll the bones</button>
-      <p class="roll-label" id="rollLabel">Roll the bones to draw a distress call.</p>
+      <p class="roll-label" id="rollLabel"></p>
     </aside>
 
     <main class="panel case" aria-live="polite">
       <div class="case-scroll" id="caseScroll">
       <div class="fx-note" id="fxNote" hidden><span class="fn-ic" id="fnIc" aria-hidden="true"></span><span id="fnT"></span></div>
-      <div class="case-empty" id="caseEmpty">
-        <div class="scroll-ic" id="scrollIc"></div>
-        <div class="big">No distress call yet.</div>
-        The die draws a unique ticket from the Workflows Troubleshooting Library. This is a silent race: every crew works the same ticket. The host can start a 1-minute prep timer. The crew at the wheel uses the library to find the framework and answers out loud. Waiting crews guess the framework from memory (no library) for +1 if correct. Don't open a live Clay workspace.
-      </div>
+      <div class="case-empty" id="caseEmpty"></div>
 
       <div id="caseBody" hidden>
         <div class="prep-bar" id="prepBar">
           <div class="prep-clock" id="prepClock" aria-live="polite">1:00</div>
           <div class="prep-status" id="prepStatus">1-min prep — waiting for the host</div>
           <div class="prep-actions">
-            <button class="btn" id="prepStartBtn" type="button">Start 1-min prep</button>
+            <button class="btn" id="prepStartBtn" type="button">Start</button>
             <button class="btn btn-paper" id="prepResetBtn" type="button">Reset</button>
           </div>
         </div>
@@ -1182,22 +1179,19 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
           <div class="guess-meta">
             <button class="btn btn-paper guess-lock" id="guessLockBtn" type="button">Lock guesses</button>
             <span class="guess-locked-flag" id="guessLockedFlag" hidden>Locked</span>
-            <span class="guess-state" id="guessState">Pick a waiting-crew guess anytime until Lock guesses, Hint, or Reveal. Opening the library does not lock them.</span>
+            <span class="guess-state" id="guessState">Pick a waiting-crew guess anytime until Lock guesses or Reveal. Opening the library does not lock them.</span>
           </div>
         </div>
         <div class="face-row">
           <span class="face-chip"><span class="dot" id="faceDot"></span><span id="faceName">Triggers</span></span>
           <span class="face-tag" id="faceTag"></span>
-          <button class="hint-btn" id="hintBtn" type="button" hidden>Hint: show framework</button>
         </div>
         <div class="ticket">
           <span class="rod rod-t" aria-hidden="true"></span><span class="rod rod-b" aria-hidden="true"></span>
-          <div class="from"><span>Library ticket <span id="ticketAuthor"></span></span><span class="tk"><span id="ticketId">#--------</span><span class="ob-mark" id="obMark" title="Facilitator: open-bug card (swap candidate, see the rules doc)" hidden>†</span></span></div>
           <p id="ticketText"></p>
           <p class="lib-prompt" id="libPrompt">Can you explain this workflow in natural language and identify the framework it represents?</p>
           <p class="lib-link" id="libLinkWrap">Crew at the wheel: use the <a href="https://claude.ai/artifact/2LGoFmnTtGxEbgZJ4HGWKc?sk=v1Dm7lsX49_pkpbt34Nh_A" target="_blank" rel="noopener">Workflows Troubleshooting Library</a> to look the ticket up and find the framework. Waiting crews may not use it.</p>
         </div>
-        <p class="ws-warn">Don't open a live Clay workspace. Live workspaces can leave broken workflows behind (for example, Javier's ticket: works from the Run button, fails via Claude MCP — missing work email).</p>
         <div class="reveal-wrap">
           <button class="btn btn-paper" id="revealBtn" type="button"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g fill="currentColor"><path d="M2 17.6l9.6-6.4 1.6 2.4-9.6 6.4z"/><path d="M11 10.6l6.7-4.5 2.4 3.6-6.7 4.5z" opacity=".85"/><path d="M17.2 5.4l3-2 3 4.5-3 2z"/><circle cx="3" cy="19" r="1.6"/></g></svg></span>Reveal the diagnosis</button>
           <div class="reveal" id="revealBox" hidden>
@@ -1270,8 +1264,8 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
       <summary>How a round runs (facilitator)</summary>
       <ol>
         <li>The crew at the wheel rolls. A unique library ticket is drawn; the framework stays hidden. Every crew works this same ticket (a silent race).</li>
-        <li>The host may press <b>Start 1-min prep</b> so all crews can prep in silence. Waiting crews guess the framework from memory — no library — for +1 if correct. The crew at the wheel uses the library to find the framework (they do not guess). Lock guesses, Hint, or Reveal locks waiting-crew picks; opening the library does not.</li>
-        <li>Read the symptom aloud. The crew at the wheel explains the workflow in natural language and identifies the framework it represents, using the <b>Workflows Troubleshooting Library</b> — do not open a live Clay workspace. If they need a hint, reveal the framework name (this does not change their score, and it locks any unlocked waiting-crew guesses).</li>
+        <li>The host may press <b>Start</b> so all crews can prep in silence. Waiting crews guess the framework from memory — no library — for +1 if correct. The crew at the wheel uses the library to find the framework (they do not guess). Lock guesses or Reveal locks waiting-crew picks; opening the library does not.</li>
+        <li>Read the symptom aloud. The crew at the wheel explains the workflow in natural language and identifies the framework it represents, using the <b>Workflows Troubleshooting Library</b>.</li>
         <li>Reveal the diagnosis: a brief summary of the workflow context, root cause, and solution, plus the framework, what was checked first, the resolution, and the verdict. Correct waiting-crew guesses sail +1. Solved it on their own? The crew at the wheel sails the number they rolled. Missed it? The next crew in turn order may steal the question and, if they get it, sail that same advance.</li>
         <li>The wheel passes to the next crew (or, after a successful steal, to the crew after the stealer). First to the chest wins the voyage.</li>
         <li>Sound: the <b>Music</b> and <b>Sound effects</b> buttons (keys <b>M</b> and <b>S</b>) switch the sea shanty and the effects on or off. Music starts off; your choice is remembered in this browser.</li>
@@ -1291,7 +1285,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   <div class="win-card settings-card log-card rules-card">
     <button class="rules-close" id="rulesClose" type="button" aria-label="Close rules">&times;</button>
     <h2 id="rulesTitle">Rules of the voyage</h2>
-    <p class="rules-sub">Silent race for 2 to 6 crews. First to Treasure (waypoint 29) wins. Don't open a live Clay workspace.</p>
+    <p class="rules-sub">Silent race for 2 to 6 crews. First to Treasure (waypoint 29) wins.</p>
     <ol class="rules-steps">
       <li><b>The library.</b> The crew at the wheel uses the <a href="https://claude.ai/artifact/2LGoFmnTtGxEbgZJ4HGWKc?sk=v1Dm7lsX49_pkpbt34Nh_A" target="_blank" rel="noopener">Workflows Troubleshooting Library</a> to find the framework. Waiting crews may not.
         <ul class="lib-sections">
@@ -1303,9 +1297,9 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
         </ul>
       </li>
       <li><b>Roll.</b> The crew at the wheel rolls; every crew works that ticket. <b>Nailed it</b> sails the number rolled. <b>Missed it</b> stays put, and the next crew may steal.</li>
-      <li><b>1-min prep.</b> The host presses <b>Start 1-min prep</b> — it never starts on its own. All crews prep in silence. The host can reset it. The last 10 seconds tick, and the clock turns red.</li>
+      <li><b>1-min prep.</b> The host presses <b>Start</b> — it never starts on its own. All crews prep in silence. The host can reset it. The last 10 seconds tick, and the clock turns red.</li>
       <li><b>Waiting-crew bonus.</b> Waiting crews guess the framework from memory, with <b>no library</b>, for +1 if correct. <b>Lock guesses</b>, <b>Hint</b>, or <b>Reveal</b> locks those picks — opening the library does not.</li>
-      <li><b>Answer and score.</b> The crew at the wheel uses the library, explains the workflow, and names the framework (they do not guess). <b>Hint: show framework</b> does not change their score. Reveal awards +1 for correct guesses, then you score the wheel. First to 29 wins.</li>
+      <li><b>Answer and score.</b> The crew at the wheel uses the library, explains the workflow, and names the framework (they do not guess). Reveal awards +1 for correct guesses, then you score the wheel. First to 29 wins.</li>
     </ol>
     <div class="settings-actions">
       <button class="btn" id="rulesDone" type="button">Back to the voyage</button>
@@ -2245,7 +2239,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     var di=$("dieIc"); di.innerHTML=fwIcon(key); di.style.setProperty("--fw",FW_COLOR[key]); di.hidden=false;
   }
   var HINT_ICON='<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="15" fill="none" stroke="var(--c-ink)" stroke-width="3"/><text x="20" y="26" text-anchor="middle" font-size="22" font-weight="800" font-family="Georgia,serif" fill="var(--c-ink)">?</text></svg>';
-  function frameworkExposed(){ return !!(state.fwHint || state.revealed); }
+  function frameworkExposed(){ return !!state.revealed; }
   function setFaceHidden(){
     var body=$("caseBody");
     body.style.setProperty("--fw","var(--c-wood)");
@@ -2256,7 +2250,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   }
   function applyFrameworkVisibility(){
     var card=state.card; if(!card) return;
-    var c=card.src, left=leftover().length, hint=$("hintBtn");
+    var c=card.src, left=leftover().length;
     if(frameworkExposed()){
       setFace(card.wild?"wild":FACES[card.face].key);
       if(card.wild){
@@ -2268,7 +2262,6 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
           ?("No "+FACES[card.face].name+" tickets left — drawn from the remaining library · "+left+" left")
           :(FACES[card.face].tag+" · "+left+" left in the chest");
       }
-      if(hint) hint.hidden=true;
     } else {
       setFaceHidden();
       if(card.wild){
@@ -2280,7 +2273,6 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
           ?("From the remaining library · "+left+" left")
           : (left+" left");
       }
-      if(hint) hint.hidden=false;
     }
   }
   function frameworkName(c,card){
@@ -2289,20 +2281,11 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     var i=["triggers","versions","data","writebk","observe"].indexOf(key);
     return i>=0?FACES[i].name:"";
   }
-  function showHint(){
-    if(!state.card || state.revealed || state.fwHint) return;
-    lockGuesses(true);
-    state.fwHint=true;
-    applyFrameworkVisibility();
-    renderRaceUI();
-    persist();
-  }
+  function showHint(){ /* hint button removed; framework is shown only on Reveal */ }
   function showCase(card,n){
     var c=card.src; var csc=$("caseScroll"); if(csc) csc.scrollTop=0;
     applyFrameworkVisibility();
     if(card.restocked) announce("catchup","The ticket chest is restocked","Every library ticket has been drawn once, so the chest is shuffled again. Still no repeats until it empties.");
-    $("ticketId").textContent="#"+(c.id||"").slice(0,8); var au=$("ticketAuthor"); if(au) au.textContent=c.author||"";
-    $("obMark").hidden=!OPEN_BUG[c.id];
     $("handsOn").hidden=true;
     $("ticketText").textContent=c.symptom||c.t||"";
     $("revealBox").hidden=true; $("revealBtn").hidden=false; $("caseBody").hidden=false; $("caseEmpty").hidden=true;
@@ -2443,7 +2426,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     state.turn=(kind==="steal")?(nx+1)%n:nx;
     state.card=null; state.revealed=false; resetRaceForNewCard(); $("dieIc").hidden=true;
     $("caseBody").hidden=true; $("caseEmpty").hidden=false;
-    $("rollBtn").disabled=false; $("rollLabel").textContent="Roll the bones to draw a distress call.";
+    $("rollBtn").disabled=false; $("rollLabel").textContent="";
     renderTurn(); pendingNote(); persist();
   }
 
@@ -2473,7 +2456,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     renderCrews();
     $("winOverlay").hidden=true; stopConfetti(); $("dieIc").hidden=true;
     $("caseBody").hidden=true; $("caseEmpty").hidden=false;
-    $("rollBtn").disabled=false; $("rollLabel").textContent="Roll the bones to draw a distress call.";
+    $("rollBtn").disabled=false; $("rollLabel").textContent="";
     drawDie(1); placeTokens(); renderTurn(); pendingNote(); persist();
   }
 
@@ -2654,7 +2637,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     if(st){
       if(state.revealed) st.textContent="Guesses scored on reveal. Correct guesses sailed +1.";
       else if(locked) st.textContent="Guesses can't be changed. The crew at the wheel may use the library.";
-      else st.textContent="Pick a waiting-crew guess anytime until Lock guesses, Hint, or Reveal. Opening the library does not lock them.";
+      else st.textContent="Pick a waiting-crew guess anytime until Lock guesses or Reveal. Opening the library does not lock them.";
     }
   }
   function renderRaceUI(){
@@ -2695,7 +2678,6 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 
   // ---------- Wire ----------
   $("rollBtn").addEventListener("click",roll);
-  $("hintBtn").addEventListener("click",showHint);
   $("revealBtn").addEventListener("click",reveal);
   window.__R2R={
     set:function(p){ Object.assign(state,p||{});
@@ -2799,7 +2781,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 
   // ---------- Boot ----------
   renderCrews();
-  $("scrollIc").innerHTML=ART.scroll;
+  var sic=$("scrollIc"); if(sic) sic.innerHTML=ART.scroll;
   legend(); drawDie(1); layoutMap(); renderTurn();
   restore();
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ LASTFIT=""; refit(); });
