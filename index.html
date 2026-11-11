@@ -288,7 +288,7 @@ to{transform:scaleY(-.35)}}
 .node-num{width:32px;height:32px;top:-10px;right:-10px;font-size:1rem;border:2.5px solid var(--stone-1);z-index:2}
 .node-cap{top:calc(100% + 9px);font-size:.95rem;padding:1px 9px;border-radius:999px;color:var(--ink);text-shadow:none;background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--line)}
 .node.start{border-radius:12px!important;border-color:var(--wood-3)}
-.node.start .node-cap{font-family:var(--pirate);font-size:1.15rem;color:var(--star)}
+.node.start .node-cap{font-family:var(--pirate);font-size:1.15rem;color:var(--c-ink)}
 .node.chest{border-radius:50%;z-index:2}
 .node.chest .node-cap{font-size:1.4rem;top:calc(100% + 6px)}
 .node.chest::before{transform:scale(3) rotate(4deg);opacity:.32}
@@ -575,7 +575,7 @@ html,body{margin:0}
   --c-parchment:#ecd9a6; --c-card:#f6e9c8; --c-ink:#2a1b0c; --c-deep:#123039;
   --c-sealine:#7fa7a8; --c-wood:#5e3b1c; --c-gold:#a8740f; --c-kraken:#a3271b;
   /* crews */
-  --crew0:#c6412f; --crew1:#2f8f5c; --crew2:#2c62a8; --crew3:#7a3fa0; --crew4:#c8661a; --crew5:#3b4a57;
+  --crew0:#22C24A; --crew0-deep:#15792E; --crew1:#9D1FD1; --crew1-deep:#9D1FD1; --crew2:#FF8A00; --crew2-deep:#A34E00; --crew3:#0B8A8A; --crew3-deep:#086868; --crew4:#C9A227; --crew4-deep:#6E5A0C; --crew5:#C81E6A; --crew5-deep:#8A1450;
   /* derived tones (shadow side = one darker mix, never a gradient) */
   --parch-shade:color-mix(in srgb,var(--c-parchment) 78%,var(--c-wood));
   --card-shade:color-mix(in srgb,var(--c-card) 82%,var(--c-wood));
@@ -828,12 +828,12 @@ aside.panel::before{display:none}
 /* ===================== v6: original watercolor board restored (feedback Oct 29) =====================
    Board, sea, land, scenery, track, frame, compass and page background are back to the pre-art-pass look.
    The 14-colour palette still governs the cards, tokens, stops, icons and overlays. */
-:root{--page:#123039;--page-2:#0b2129;--bg:#123039;
+:root{--page:#0C1E36;--page-2:#081526;--bg:#0C1E36;
   --waves:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='40'><path d='M0 20 Q15 10 30 20 T60 20 T90 20 T120 20' fill='none' stroke='%23ffffff' stroke-opacity='.05' stroke-width='2'/></svg>")}
-:root[data-theme="dark"]{--page:#060e15;--page-2:#03080d;--bg:#060e15}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--page:#060e15;--page-2:#03080d;--bg:#060e15}}
+:root[data-theme="dark"]{--page:#07101C;--page-2:#050B14;--bg:#07101C}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--page:#07101C;--page-2:#050B14;--bg:#07101C}}
 html{background:var(--page-2)}
-body{background:radial-gradient(1200px 600px at 50% -10%, color-mix(in srgb,var(--page) 70%,#3d7a80) , transparent 70%),var(--waves),linear-gradient(180deg,var(--page),var(--page-2))}
+body{background:radial-gradient(1200px 600px at 50% -10%, color-mix(in srgb,var(--page) 70%,#1A4A73) , transparent 70%),var(--waves),linear-gradient(180deg,var(--page),var(--page-2))}
 body::before{display:block;content:"";position:fixed;left:0;right:0;bottom:0;height:200px;z-index:-1;pointer-events:none;opacity:.55;
   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='60'><path d='M0 30 Q30 10 60 30 T120 30 T180 30 T240 30 V60 H0Z' fill='%23ffffff' fill-opacity='.05'/></svg>") repeat-x 0 60px/240px 60px,
     url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='80'><path d='M0 40 Q40 15 80 40 T160 40 T240 40 T320 40 V80 H0Z' fill='%23ffffff' fill-opacity='.06'/></svg>") repeat-x 0 110px/320px 80px,
@@ -847,21 +847,21 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   animation:twinkle 6s ease-in-out infinite alternate}
 
 /* board-scoped original colours (light theme) */
-.map{--sea-1:#cfe3d8;--sea-2:#a9cbc4;--shallow:#d9efe6;--sand-1:#f1dca4;--sand-2:#d9b977;--sand-edge:#b8915a;
+.map{--sea-1:#1B4A73;--sea-2:#0A1628;--shallow:#245A80;--sand-1:#f1dca4;--sand-2:#d9b977;--sand-edge:#b8915a;
   --grass:#7aa35a;--palm:#3f8a4a;--kraken:#9a3a55;--kraken-sucker:#f2c3cf;--serpent:#3e7d5c;
   --far-ship:#5a4632;--far-sail:#f6ecd2;--cart-bg:#f7ebc9;--track-bed:#f3e2b3;--track-edge:#8a6a3a;
   --wood-1:#7a4f2a;--wood-2:#5a3a1c;--wood-3:#3f2812;--rope-1:#e0c38a;--rope-2:#9c7a44;
-  --brass-1:#f4d27a;--brass-2:#c8941f;--brass-3:#8a5f0c;--port:#b8352a;--trail:#b8352a;--sea-line:#7fa7a8;--wood:#5e3b1c;
-  --gold:#a8740f;--surface:#f6e9c8;--map:#ecd9a6;--ink:#2a1b0c;--parch-edge:rgba(120,78,28,.38);
+  --brass-1:#f4d27a;--brass-2:#c8941f;--brass-3:#8a5f0c;--port:#b8352a;--trail:#b8352a;--sea-line:#7FA4C0;--wood:#5e3b1c;
+  --gold:#a8740f;--surface:#f6e9c8;--map:#0A1628;--ink:#2a1b0c;--parch-edge:rgba(4,12,28,.55);
   --rope:repeating-linear-gradient(55deg,var(--rope-1) 0 4px,var(--rope-2) 4px 6px,var(--rope-1) 6px 9px)}
-:root[data-theme="dark"] .map{--sea-1:#16303a;--sea-2:#0c1f28;--shallow:#1f4a52;--sand-1:#8a7448;--sand-2:#6a5534;--sand-edge:#4d3d22;
+:root[data-theme="dark"] .map{--sea-1:#16375C;--sea-2:#07101C;--shallow:#1A3F66;--sand-1:#8a7448;--sand-2:#6a5534;--sand-edge:#4d3d22;
   --grass:#4f7a3c;--palm:#3f8a5a;--kraken:#c4587a;--kraken-sucker:#ffd0dc;--serpent:#4fae7e;--far-ship:#c9b48a;--far-sail:#3a3428;--cart-bg:#3a3020;
   --track-bed:#5a4a30;--track-edge:#2a1d0e;--wood-1:#6a4424;--wood-2:#4a2e14;--wood-3:#2e1b09;--rope-1:#b89a62;--rope-2:#6e5430;
-  --port:#ea6a52;--trail:#ea6a52;--sea-line:#2f5b66;--wood:#9a6634;--gold:#e8b94e;--surface:#2a2216;--map:#1f2a2c;--ink:#f3e4c0;--parch-edge:rgba(0,0,0,.55)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .map{--sea-1:#16303a;--sea-2:#0c1f28;--shallow:#1f4a52;--sand-1:#8a7448;--sand-2:#6a5534;--sand-edge:#4d3d22;
+  --port:#ea6a52;--trail:#ea6a52;--sea-line:#6A93B0;--wood:#9a6634;--gold:#e8b94e;--surface:#2a2216;--map:#07101C;--ink:#f3e4c0;--parch-edge:rgba(0,0,0,.55)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .map{--sea-1:#16375C;--sea-2:#07101C;--shallow:#1A3F66;--sand-1:#8a7448;--sand-2:#6a5534;--sand-edge:#4d3d22;
   --grass:#4f7a3c;--palm:#3f8a5a;--kraken:#c4587a;--kraken-sucker:#ffd0dc;--serpent:#4fae7e;--far-ship:#c9b48a;--far-sail:#3a3428;--cart-bg:#3a3020;
   --track-bed:#5a4a30;--track-edge:#2a1d0e;--wood-1:#6a4424;--wood-2:#4a2e14;--wood-3:#2e1b09;--rope-1:#b89a62;--rope-2:#6e5430;
-  --port:#ea6a52;--trail:#ea6a52;--sea-line:#2f5b66;--wood:#9a6634;--gold:#e8b94e;--surface:#2a2216;--map:#1f2a2c;--ink:#f3e4c0;--parch-edge:rgba(0,0,0,.55)}}
+  --port:#ea6a52;--trail:#ea6a52;--sea-line:#6A93B0;--wood:#9a6634;--gold:#e8b94e;--surface:#2a2216;--map:#07101C;--ink:#f3e4c0;--parch-edge:rgba(0,0,0,.55)}}
 
 /* frame: wood + rope + brass corners, parchment with vignette */
 .map{background-color:var(--map);background-image:var(--noise),radial-gradient(ellipse at center,transparent 58%,var(--parch-edge) 135%);
@@ -877,16 +877,17 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 .map::after{display:block;content:"";position:absolute;inset:4px;border:none;outline:none;border-radius:6px;padding:6px;background:var(--rope);pointer-events:none;
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
   box-shadow:none;opacity:.95;z-index:5}
-.mapboard{border-radius:14px;box-shadow:inset 0 0 0 1px rgba(90,55,15,.25),inset 0 0 40px rgba(60,40,10,.18)}
+.mapboard{border-radius:14px;box-shadow:inset 0 0 0 1px rgba(10,22,40,.4),inset 0 0 48px rgba(4,10,24,.45)}
 
 /* sea + scenery */
-.sea .sea-tint{opacity:.62}
+.sea .sea-tint{opacity:.95}
 .sea .grid{stroke:var(--sea-line);stroke-width:.8;opacity:.35}
-.sea .rhumb{stroke:var(--ink);stroke-width:.7;opacity:.12}.sea .rhumb.thin{opacity:.07}
+.sea .rhumb{stroke:var(--sea-line);stroke-width:.7;opacity:.22}.sea .rhumb.thin{opacity:.12}
 .sea .wv{stroke:var(--sea-line)}
 .sea .ripple{stroke:var(--sea-line)}
 .sea .foam{stroke:#fff}
 .sea .cloud{fill:#fff;opacity:.55}
+.sea .gull .flap{stroke:#f6e9c8;opacity:.85}
 :root[data-theme="dark"] .sea .cloud{opacity:.12}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sea .cloud{opacity:.12}}
 .sea .gull .flap{stroke:var(--ink);opacity:.7}
@@ -906,7 +907,10 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 .node{filter:drop-shadow(0 4px 5px rgba(30,18,6,.3))}
 .ship{filter:drop-shadow(0 4px 4px rgba(20,12,4,.4))}
 
-.ship{z-index:20}.ship.sailing{z-index:21}.compass{z-index:16}.ripple-fx{z-index:19}
+.ship{z-index:50!important;filter:drop-shadow(0 0 0 2px #0A1628) drop-shadow(0 5px 6px rgba(5,10,20,.6))}
+.ship.sailing{z-index:51!important}
+.ship.active{z-index:52!important}
+.compass{z-index:16}.ripple-fx{z-index:19}
 
 /* ===================== v7: smaller, tighter right-hand panel (feedback Oct 29: too much scrolling after Reveal) =====================
    Card body ~23px at 1080p (was 28px). Board, colours and gameplay unchanged. */
@@ -942,7 +946,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 .r2r .handson .wf-fixed{margin-top:0}
 
 /* ===================== v7: whose turn is it? (feedback Oct 29: emphasize the active crew) ===================== */
-.r2r{--turnc:var(--crew0)}
+.r2r{--turnc:var(--crew0-deep)}
 /* big banner in the crew's colour at the top of the turn panel */
 .r2r .turn-flag{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:0 0 8px;padding:6px 14px;
   background:var(--turnc);color:var(--c-card);border:var(--ol);border-radius:10px;box-shadow:inset 0 -5px 0 color-mix(in srgb,var(--c-ink) 30%,var(--turnc));
@@ -967,7 +971,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
 .ship.active::before{content:"";position:absolute;left:50%;top:50%;width:150%;height:150%;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;z-index:-1;
   border:calc(5px / var(--bs,1)) solid var(--turnc);box-shadow:0 0 0 calc(3px / var(--bs,1)) var(--c-ink);animation:shipRing 1.8s ease-out infinite}
 @keyframes shipRing{0%{transform:translate(-50%,-50%) scale(.7);opacity:.95}100%{transform:translate(-50%,-50%) scale(1.15);opacity:0}}
-.mapboard:has(.ship.active) .ship:not(.active){opacity:.72;filter:saturate(.6)}
+.mapboard:has(.ship.active) .ship:not(.active){opacity:1}
 @media (prefers-reduced-motion:reduce){.r2r .crew.turn{animation:none}.ship.active::before{animation:none;opacity:.8;transform:translate(-50%,-50%) scale(.95)}}
 /* verdict stamp sits on the "Where it failed" heading row instead of its own line */
 .r2r .reveal:not([hidden]){display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px}
@@ -1414,15 +1418,20 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   var O=' class="o"';
   function snd(n,a){ try{ if(window.R2RSound) R2RSound.play(n,a); }catch(e){} }
   function ship(color,i){
-    // one hull drawing; light from the top left, one darker tone on the right/shadow side
+    // Original pirate-ship drawing (mast, pennant, two sails, hull, portholes).
+    // Hull and sails are tinted in the crew colour; lighting still comes from the top left. No badge circle.
+    var sailL='color-mix(in srgb,'+color+' 45%, var(--c-card))';
+    var sailR='color-mix(in srgb,'+color+' 62%, var(--card-shade))';
+    var hull='color-mix(in srgb,'+color+' 80%, var(--c-wood))';
+    var hullSh='color-mix(in srgb,'+color+' 58%, var(--c-ink))';
     return '<svg viewBox="0 0 48 48" width="100%" height="100%">'
       +'<rect'+O+' x="22.6" y="3.5" width="2.8" height="28" fill="var(--c-wood)"/>'
       +'<path'+O+' d="'+PENNANT[i||0]+'" fill="'+color+'"/>'
-      +'<path'+O+' d="M21.5 9 Q12 17 9 28 L21.5 28 Z" fill="var(--c-card)"/>'
-      +'<path'+O+' d="M26.2 7 Q40 15 40 28 L26.2 28 Z" fill="var(--card-shade)"/>'
+      +'<path'+O+' d="M21.5 9 Q12 17 9 28 L21.5 28 Z" fill="'+sailL+'"/>'
+      +'<path'+O+' d="M26.2 7 Q40 15 40 28 L26.2 28 Z" fill="'+sailR+'"/>'
       +'<path d="M26.2 17 Q36 20 38.2 26.5 L26.2 26.5 Z" fill="'+color+'"/>'
-      +'<path'+O+' d="M3.5 29 L44.5 29 L38 39 Q24 42.5 10 39 Z" fill="var(--c-wood)"/>'
-      +'<path d="M27 30.6 L42.4 30.6 L37 37.6 Q32 39.4 27 39.6 Z" fill="var(--wood-shade)"/>'
+      +'<path'+O+' d="M3.5 29 L44.5 29 L38 39 Q24 42.5 10 39 Z" fill="'+hull+'"/>'
+      +'<path d="M27 30.6 L42.4 30.6 L37 37.6 Q32 39.4 27 39.6 Z" fill="'+hullSh+'"/>'
       +'<path d="M6.5 32 L41.5 32" stroke="'+color+'" stroke-width="2.4"/>'
       +'<g fill="var(--c-ink)"><circle cx="15" cy="35.4" r="1.3"/><circle cx="22" cy="35.8" r="1.3"/><circle cx="29" cy="35.8" r="1.3"/></g>'
       +'</svg>';
@@ -1456,7 +1465,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
       +'<g fill="var(--c-card)"><circle cx="16" cy="52" r="2.6"/><circle cx="20" cy="41" r="2.6"/><circle cx="30" cy="35.5" r="2.6"/><circle cx="41" cy="31" r="2.4"/><circle cx="46.5" cy="21" r="2.2"/></g></svg>'
   };
   // Framework colours: one per die face, only on the card's header band (+ die/legend badges). Kraken = Kraken red.
-  var FW_COLOR={triggers:"var(--crew4)",versions:"var(--crew2)",data:"var(--c-sealine)",writebk:"var(--crew3)",observe:"var(--crew1)",wild:"var(--c-kraken)"};
+  var FW_COLOR={triggers:"#c8661a",versions:"#2c62a8",data:"var(--c-sealine)",writebk:"#7a3fa0",observe:"#2f8f5c",wild:"var(--c-kraken)"};
   var FW_INK={triggers:"var(--c-card)",versions:"var(--c-card)",data:"var(--c-ink)",writebk:"var(--c-card)",observe:"var(--c-card)",wild:"var(--c-card)"};
   var ART = {
     anchor:'<svg viewBox="0 0 40 40" class="art"><g fill="none" stroke="var(--c-card)" stroke-width="3.4" stroke-linecap="round">'
@@ -1517,7 +1526,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     +'<rect'+O+' x="8" y="16" width="3" height="8" fill="var(--c-gold)"/></g></svg>';
   ART.mermaid='<svg viewBox="0 0 40 40" class="art"><circle'+O+' cx="20" cy="10" r="5.5" fill="var(--c-card)"/>'
     +'<path'+O+' d="M16 15 Q14 22 17 28 L23 28 Q26 22 24 15Z" fill="var(--c-card)"/>'
-    +'<path'+O+' d="M17 27 Q12 32 8 30 Q14 36 20 31 Q26 36 32 30 Q28 32 23 27Z" fill="var(--crew1)"/>'
+    +'<path'+O+' d="M17 27 Q12 32 8 30 Q14 36 20 31 Q26 36 32 30 Q28 32 23 27Z" fill="#2f8f5c"/>'
     +'<path d="M16 9 Q20 6 24 9" stroke="var(--c-ink)" stroke-width="2" fill="none"/>'
     +'<circle cx="18.2" cy="10" r="1" fill="var(--c-ink)"/><circle cx="21.8" cy="10" r="1" fill="var(--c-ink)"/></svg>';
   ART.bottle='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M16 6 h8 v5 l3 4 v20 a4 4 0 0 1-4 4 h-6 a4 4 0 0 1-4-4 V15 l3-4Z" fill="var(--c-sealine)"/>'
@@ -1593,13 +1602,13 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     +'<rect'+O+' x="21" y="20" width="15" height="13" fill="var(--c-gold)"/><path d="M22.5 21.5 L34.5 31.5 M34.5 21.5 L22.5 31.5" stroke="var(--c-ink)" stroke-width="2.2"/></svg>';
   ART.reef='<svg viewBox="0 0 40 40" class="art"><g fill="none" stroke-linecap="round" stroke-linejoin="round">'
     +'<path d="M20 34 V20 M20 24 Q12 21 11 12 M20 22 Q28 20 29 10 M11 16 Q6 15 5 9 M29 15 Q34 14 35 8 M20 20 V7" stroke="var(--c-ink)" stroke-width="8"/>'
-    +'<path d="M20 34 V20 M20 24 Q12 21 11 12 M20 22 Q28 20 29 10 M11 16 Q6 15 5 9 M29 15 Q34 14 35 8 M20 20 V7" stroke="var(--crew4)" stroke-width="3.6"/></g>'
+    +'<path d="M20 34 V20 M20 24 Q12 21 11 12 M20 22 Q28 20 29 10 M11 16 Q6 15 5 9 M29 15 Q34 14 35 8 M20 20 V7" stroke="#c8661a" stroke-width="3.6"/></g>'
     +'<path'+O+' d="M5 36 Q20 30 35 36Z" fill="var(--c-ink)"/></svg>';
-  ART.parrot='<svg viewBox="0 0 40 40" class="art"><g transform="translate(20 21) scale(1.18) translate(-20 -21)"><path'+O+' d="M17 29 L14 39 L19 36 L22 39 L23 29Z" fill="var(--crew2)"/>'
-    +'<path'+O+' d="M16 12 Q11 22 16 30 L24 30 Q28 21 26 12Z" fill="var(--crew0)"/>'
-    +'<circle'+O+' cx="21" cy="10" r="6.5" fill="var(--crew0)"/>'
+  ART.parrot='<svg viewBox="0 0 40 40" class="art"><g transform="translate(20 21) scale(1.18) translate(-20 -21)"><path'+O+' d="M17 29 L14 39 L19 36 L22 39 L23 29Z" fill="#2c62a8"/>'
+    +'<path'+O+' d="M16 12 Q11 22 16 30 L24 30 Q28 21 26 12Z" fill="#c6412f"/>'
+    +'<circle'+O+' cx="21" cy="10" r="6.5" fill="#c6412f"/>'
     +'<path'+O+' d="M26.5 7.5 Q33 8.5 31 15.5 Q29.5 12.5 26.5 13Z" fill="var(--c-gold)"/>'
-    +'<path'+O+' d="M17 16 Q13 24 18 29 Q23 25 22 16Z" fill="var(--crew1)"/>'
+    +'<path'+O+' d="M17 16 Q13 24 18 29 Q23 25 22 16Z" fill="#2f8f5c"/>'
     +'<circle cx="22.5" cy="9" r="2.2" fill="var(--c-card)"/><circle cx="23" cy="9" r="1.1" fill="var(--c-ink)"/>'
     +'<path'+O+' d="M5 31 H35" fill="none" stroke-width="4"/><path d="M5 31 H35" stroke="var(--c-wood)" stroke-width="2.2"/></g></svg>';
   ART.cannon='<svg viewBox="0 0 40 40" class="art"><path'+O+' d="M5 20 L29 11 Q35 9 36 14 Q37 19 31 19.5 L7 27Z" fill="var(--c-ink)"/>'
@@ -1703,7 +1712,8 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   // ---------- Crews ----------
   var MAX_CREWS=6;
   var CREW_DEFAULTS=["Port Crew","Starboard Crew","Crow's Nest Crew","Powder Monkeys","Sea Dog Crew","Bilge Rat Crew"];
-  var CREW_HEX=["#c6412f","#2f8f5c","#2c62a8","#7a3fa0","#c8661a","#3b4a57"]; // = --crew0..5 (style guide)
+  var CREW_HEX=["#22C24A","#9D1FD1","#FF8A00","#0B8A8A","#C9A227","#C81E6A"]; // = --crew0..5
+  var CREW_SURFACE=["#15792E","#9D1FD1","#A34E00","#086868","#6E5A0C","#8A1450"]; // darkened for cream-text banners/tabs
   var GOLD_HEX="#a8740f", CARD_HEX="#f6e9c8", INK_HEX="#2a1b0c"; // canvas confetti can't read CSS vars
 
   // ---------- State ----------
@@ -1800,7 +1810,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
     var H=padTop+(rows-1)*gapY+A+g.bottom;
     board.style.width=W+"px"; board.style.height=H+"px"; board.style.transform="scale("+fb.s.toFixed(4)+")";
     board.style.setProperty("--bs",(fb.s||1).toFixed(4)); // keeps the 3px ink outline and label sizes true on screen
-    SHIP=Math.ceil(Math.max(46,Math.min(58,65*(innerHeight/1080)/(fb.s||1)))); // ships >= 64px long at 1080p
+    SHIP=Math.ceil(Math.max(80,Math.min(160,100*(innerHeight/1080)/(fb.s||1)))); // ~1.7–2× the previous 46–58px tokens so they stay ~100px on screen after board scale
     board.style.setProperty("--capk",(fb.s<1?Math.min(1.35,Math.max(1,0.75/fb.s)):1).toFixed(3));
     var bsz=$("boardSizer"); bsz.style.width=(W*fb.s).toFixed(1)+"px"; bsz.style.height=(H*fb.s).toFixed(1)+"px";
     CENTERS=[]; var P=[], spaceP=[], sgn=1;
@@ -1969,9 +1979,8 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
       +'<path d="M'+f1(o.x-w*0.3)+' '+f1(y+h-9)+' q'+f1(w*0.15)+' -5 '+f1(w*0.3)+' 0 t'+f1(w*0.3)+' 0" fill="none" stroke="var(--trail)" stroke-width="1.2" opacity=".7"/></g>'; }
 
   // ---------- Ships on the track ----------
-  function groupOffsets(k){ var out=[], rowsN=Math.ceil(k/3), sp=SHIP+4, dy=SHIP+2;
-    for(var j=0;j<k;j++){ var r=Math.floor(j/3), inRow=(r<rowsN-1)?3:(k-3*r), c=j%3;
-      out.push({x:(c-(inRow-1)/2)*sp, y:(r-(rowsN-1)/2)*dy-6}); } return out; }
+  function groupOffsets(k){ var out=[], sp=SHIP*0.72, y=-SHIP*0.22;
+    for(var j=0;j<k;j++){ out.push({x:(j-(k-1)/2)*sp, y:y}); } return out; }
   function shipTarget(t){
     var sp=state.pos[t], same=[]; for(var u=0;u<crewCount();u++) if(state.pos[u]===sp) same.push(u);
     var o=groupOffsets(same.length)[same.indexOf(t)], c=CENTERS[sp]||CENTERS[0];
@@ -2078,7 +2087,7 @@ body::after{display:block;content:"";position:fixed;inset:0 0 auto 0;height:340p
   function renderTurn(){
     $("turnPin").innerHTML=pin(teamColor[state.turn]);
     $("turnName").textContent=state.names[state.turn];
-    var R=$("r2r"); if(R){ R.style.setProperty("--turnc",teamColor[state.turn]); R.setAttribute("data-turn",state.turn); }
+    var R=$("r2r"); if(R){ R.style.setProperty("--turnc",CREW_SURFACE[state.turn]||teamColor[state.turn]); R.setAttribute("data-turn",state.turn); }
     for(var i=0;i<crewCount();i++){ var c=$("crew"+i); if(c) c.classList.toggle("turn",state.turn===i); var tk=$("tok"+i); if(tk) tk.classList.toggle("active",state.turn===i&&!state.over); }
   }
 
