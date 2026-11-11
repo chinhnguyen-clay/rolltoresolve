@@ -18,12 +18,12 @@ Two to six pirate crews race across a treasure map of **30 checkpoints** to a ch
 
   | # | Default name | Ship color | Pennant |
   |---|---|---|---|
-  | 1 | Port Crew | red | triangle |
-  | 2 | Starboard Crew | green | swallowtail |
-  | 3 | Crow's Nest Crew | blue | square |
-  | 4 | Powder Monkeys | purple | long streamer |
-  | 5 | Sea Dog Crew | orange | zigzag |
-  | 6 | Bilge Rat Crew | slate | rounded banner |
+  | 1 | Port Crew | bright green | triangle |
+  | 2 | Starboard Crew | purple | swallowtail |
+  | 3 | Crow's Nest Crew | bright orange | square |
+  | 4 | Powder Monkeys | teal | long streamer |
+  | 5 | Sea Dog Crew | gold | zigzag |
+  | 6 | Bilge Rat Crew | berry | rounded banner |
 
   Click a crew's name on the scoreboard to rename it (16 characters max).
 - **One shared screen.** A facilitator runs the game on a screen-shared or projected display. Crews don't need their own copy.
